@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FourtyTwo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07090f;--bg2:#0d1117;--bg3:#141b26;--bg4:#1a2235;
+  --cyan:#00d4ff;--pink:#ff2d78;--violet:#a855f7;--gold:#f5c842;
+  --green:#00ff88;
+  --text:#e8edf5;--text2:#7a8aa0;--text3:#3d4f66;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(0,212,255,.22);
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Courier New',monospace;font-size:13px}
+#nav{display:flex;gap:4px;padding:10px 12px;background:rgba(7,9,15,.97);border-bottom:1px solid var(--bd);overflow-x:auto;align-items:center;position:sticky;top:0;z-index:99}
+.nb{flex-shrink:0;padding:7px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--text2);font-family:inherit;letter-spacing:.4px}
+.nb.on{background:rgba(0,212,255,.1);color:var(--cyan);border-color:var(--bd2)}
+.xpb{margin-left:auto;flex-shrink:0;display:flex;gap:14px;font-size:11px;padding-left:10px;white-space:nowrap}
+#main{padding:16px 14px;max-width:720px;margin:0 auto;padding-bottom:60px}
+.sf{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.sf2{background:var(--bg2);border:1px solid var(--bd2);border-radius:10px;padding:14px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.metric{background:var(--bg3);border-radius:8px;padding:12px}
+.ml{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.mv{font-size:24px;font-weight:700;line-height:1}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600}
+.pc{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.25)}
+.pp{background:rgba(255,45,120,.1);color:var(--pink);border:1px solid rgba(255,45,120,.25)}
+.pv{background:rgba(168,85,247,.1);color:var(--violet);border:1px solid rgba(168,85,247,.25)}
+.pm{background:rgba(122,138,160,.08);color:var(--text2);border:1px solid rgba(122,138,160,.15)}
+.pn{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2)}
+.pillar{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.pillar:last-child{border-bottom:none}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tb{padding:7px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--text2);font-family:inherit}
+.tb.on{background:rgba(0,212,255,.1);color:var(--cyan);border-color:var(--bd2)}
+.hand-big{font-size:clamp(48px,14vw,72px);font-weight:700;text-align:center;letter-spacing:6px;line-height:1;padding:18px 0 8px}
+.act-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.abtn{padding:14px 28px;font-size:14px;font-weight:700;font-family:inherit;border-radius:8px;cursor:pointer;letter-spacing:.5px;border:1px solid;min-width:130px}
+.a-open{background:rgba(0,212,255,.1);color:var(--cyan);border-color:rgba(0,212,255,.35)}
+.a-fold{background:rgba(255,45,120,.1);color:var(--pink);border-color:rgba(255,45,120,.35)}
+.a-shove{background:rgba(168,85,247,.1);color:var(--violet);border-color:rgba(168,85,247,.35)}
+.res-ok{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);border-radius:8px;padding:12px}
+.res-no{background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.25);border-radius:8px;padding:12px}
+.fcard{border:1px solid var(--bd2);border-radius:10px;min-height:200px;background:var(--bg2);cursor:pointer;display:flex;flex-direction:column;justify-content:center;padding:1.5rem;user-select:none}
+.fc-q{font-size:clamp(14px,4vw,16px);font-weight:700;line-height:1.6;margin-top:10px}
+.fc-a{font-size:12px;line-height:1.9;color:var(--text2)}
+.qbox{font-size:14px;line-height:1.8;padding:14px;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;margin-bottom:12px}
+.qopt{display:block;text-align:left;padding:12px 14px;font-size:12px;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--bg3);color:var(--text);font-family:inherit;width:100%;margin-bottom:6px;line-height:1.5}
+.qopt.qok{background:rgba(0,255,136,.08);color:var(--green);border-color:rgba(0,255,136,.3)}
+.qopt.qno{background:rgba(255,45,120,.08);color:var(--pink);border-color:rgba(255,45,120,.3)}
+.qopt.qdim{opacity:.3}
+.gbtn{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.3);padding:12px 20px;font-size:12px;cursor:pointer;border-radius:7px;font-family:inherit;font-weight:600;letter-spacing:.4px;width:100%;margin-bottom:10px}
+.grid-wrap{display:grid;grid-template-columns:18px repeat(13,minmax(0,1fr));gap:2px}
+.gc{font-size:clamp(5.5px,1.5vw,7.5px);text-align:center;padding:3px 1px;border-radius:2px;border:1px solid transparent;line-height:1.3;font-family:'Courier New',monospace;font-weight:600}
+.g-prem{background:rgba(245,200,66,.22);color:#f5d020;border-color:rgba(245,200,66,.5);font-weight:700}
+.g-open{background:rgba(0,160,255,.18);color:#4dc8ff;border-color:rgba(0,160,255,.45)}
+.g-blvb{background:rgba(0,210,170,.15);color:#00e8bb;border-color:rgba(0,210,170,.45)}
+.g-dead{background:rgba(255,120,0,.15);color:#ff9030;border-color:rgba(255,120,0,.45)}
+.g-shove{background:rgba(130,220,0,.14);color:#88dd00;border-color:rgba(130,220,0,.4)}
+.g-sh15{background:rgba(255,200,60,.12);color:#ffc83c;border-color:rgba(255,200,60,.35)}
+.g-fold{background:rgba(14,17,23,.95);color:#1e2d42;border-color:rgba(255,255,255,.04)}
+.nbtn{width:100%;padding:12px;font-size:12px;cursor:pointer;border-radius:8px;border:1px solid var(--bd);background:var(--bg3);color:var(--text2);font-family:inherit;font-weight:600;margin-top:8px}
+.pb{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:12px;overflow:hidden}
+.pf{height:100%;border-radius:2px;background:linear-gradient(90deg,#00a8cc,#00d4ff)}
+.qpb{height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.qpf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width .3s}
+.cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gl{0%,100%{opacity:1}50%{opacity:.72}}
+.anim{animation:fi .2s ease forwards}
+.glow{animation:gl 2s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div id="nav">
+  <button class="nb on" data-action="nav" data-view="home">&#9824; FourtyTwo</button>
+  <button class="nb" data-action="nav" data-view="drill">&#9829; MTT Drill</button>
+  <button class="nb" data-action="nav" data-view="flash">&#9830; Cards</button>
+  <button class="nb" data-action="nav" data-view="quiz">&#9827; Quiz</button>
+  <button class="nb" data-action="nav" data-view="grid">&#9632; Grid</button>
+  <button class="nb" data-action="nav" data-view="cash">&#9786; Cash</button>
+  <div class="xpb">
+    <span id="xpd" style="color:#f5c842;font-weight:700">&#9889; 0 XP</span>
+    <span id="std" style="color:#a855f7">&#9670; 0</span>
+  </div>
+</div>
+<div id="main"></div>
+<script>
+'use strict';
+var RANKS=['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+var RV={A:14,K:13,Q:12,J:11,T:10,9:9,8:8,7:7,6:6,5:5,4:4,3:3,2:2};
+var WSOP=new Date('2026-06-04');
+var POSITIONS=['UTG','HJ','CO','BTN','SB'];
+var PW={UTG:.15,HJ:.19,CO:.26,BTN:.48,SB:.42};
+var STACKS=[15,18,20,22,25,30,35,40,50,75];
+var SUITS=['\u2660','\u2665','\u2666','\u2663'];
+var PILLARS=[
+  {id:1,name:'Opening Ranges',sub:'Position + depth fundamentals',status:'done',theory:[
+    'Open ranges tighten from left to right: UTG ~15%, HJ ~19%, CO ~26%, BTN ~45%, SB ~40%.',
+    'The dead zone (23-40BB) kills speculative hands — suited connectors and small pairs lose EV here. Too shallow for implied odds, too deep to shove.',
+    'Below 22BB: shove-or-fold. Stop open-raising and navigate postflop. Shove your strong hands, fold the rest.',
+    'Above 40BB: suited connectors (67s+) and small pairs (22+) re-enter your range for set-mining and implied odds.',
+    'Premium hands (AA, KK, QQ, JJ, TT, AKs, AKo, AQs) open from any position at any depth above 15BB.',
+    'Position is the most valuable asset in poker — a hand playable from BTN may be a fold from UTG.',
+    'Stack depth determines your strategy more than any other single factor. Know your BB count at all times.',
+    'At 20-22BB use a 2x open, not 2.5x or 3x. Raising larger gets jammed on constantly — you lose an extra BB every time you fold. Three buckets: raise/call (QQ+, AK), open-shove directly (TT-JJ, AQs), raise/fold with blockers (A5s, KTs).',
+    'At 20BB open 2x with QQ and call off a jam. Shoving 20BB folds out 77-JJ and AJ type hands that would call a raise — you leave value on the table.',
+    'KJo is a standard CO/BTN open at any depth. From UTG it is borderline at 30BB+ and a fold short-stacked.',
+  ]},
+  {id:2,name:'Post-Flop Foundations',sub:'C-bet, board textures, check-raise',status:'done',theory:[
+    'Board texture drives c-bet sizing: dry boards (A72r) = small size (25-33%) at high frequency. Wet boards (987tt) = large size (60-75%) or check.',
+    'Range advantage means your range connects better with the board than your opponent\'s. High range advantage = bet frequently and small.',
+    'Dry ace-high boards (A72r, A52r) heavily favor the preflop raiser — c-bet near 100% at small size.',
+    'Low connected boards (432, 654) hit the BB calling range hard with suited connectors and small pairs. Check frequently as the raiser.',
+    'Rule of 2 and 4: multiply your outs by 4 on the flop, by 2 on the turn for approximate equity percentage.',
+    'Check-raise bluffs require combo draws or strong semi-bluffs — never check-raise pure air. You need equity when called.',
+    'Multiway pots require much stronger hands to c-bet profitably. Check more, bet only with strong made hands or nut draws.',
+    'SPR (stack-to-pot ratio) determines commitment: SPR 1-2 = committed with top pair. SPR 4-6 = need two pair+. SPR 8+ = need very strong hands to stack off.',
+    'A blocker bet (20-25% OOP) controls pot size with medium-strength hands and prevents facing large bets.',
+  ]},
+  {id:3,name:'3-Bet & Squeeze',sub:'Resteal math, oversized opens',status:'active',gaps:['A7s multiway resteal math','3x-5x open response drill pending'],theory:[
+    'A balanced 3-bet range is roughly 50% value hands and 50% bluffs. Pure value 3-bets are exploitable by folding.',
+    'Best 3-bet bluffs have blocker value: A3s-A5s (block AA and AK), K9s-KTs (block KK). Avoid hands that block calling ranges.',
+    'In-position 3-bet sizing: ~3x the open. Out-of-position: ~3.5-4x. Larger OOP to compensate for positional disadvantage.',
+    'A resteal is shoving over a late-position open from the blinds at 15-25BB. Optimal when opener has a wide range and folds often.',
+    'A7s multiway resteal loses value rapidly: calculate combined calling frequencies across all remaining players, then apply ICM multiplier.',
+    'Vs oversized opens (4x-5x): scale your 3-bet proportionally (11-13BB vs typical 7-8BB). Or flat more with strong hands if deep enough.',
+    'Squeeze play: 3-betting after an open plus one or more callers. Both callers have capped ranges — maximum fold equity.',
+    '4-bet at 25BB or less is almost always a shove. Flat or 4-bet small only when deep enough to navigate postflop (50BB+).',
+    'When you 3-bet light and get 4-bet, fold. A3s-A5s and K9s are 3-bet bluffs that give up to 4-bets from tight ranges.',
+  ]},
+  {id:4,name:'ICM & Tournament Play',sub:'Bubble, FT, payout ladders',status:'pending',theory:[
+    'ICM (Independent Chip Model) converts chip stacks into real dollar equity. A chip near the bottom of your stack is worth MORE than a chip added to a big stack.',
+    'Near the bubble: tighten early-position shoves, especially when covered by big stacks. A min-cash has real monetary value.',
+    'Bubble factor: the ratio of ICM-adjusted EV to ChipEV. High bubble factor = you need much more equity to call profitably.',
+    'As chip leader, exploit ICM by shoving wide against short-to-medium stacks who are heavily ICM-constrained.',
+    'Being covered by another player is the worst ICM position. Any confrontation risks elimination vs a capped upside.',
+    'PKO bounty formats shift strategy toward calling wider — you gain chips PLUS a bounty. ICM is still present but partially offset.',
+    'Nash equilibrium is the unexploitable push/fold strategy. Use it as a baseline and adjust for actual opponent tendencies (most players call too tight).',
+    'Short stack FT strategy: shove from late position when antes create value, do not wait for aces at 10BB — you lose fold equity.',
+    'ICM deals: compare your ICM equity vs your skill edge vs remaining field. Against tough opponents, deals often make sense.',
+  ]},
+  {id:5,name:'Advanced Adjustments',sub:'Exploits, live reads, dynamics',status:'pending',theory:[
+    'Against calling stations: remove bluffs, value-bet thinner, size up with strong hands, never slow-play.',
+    'Against tight nits: increase steal frequency, 3-bet light in position, give them credit when they fight back.',
+    'Against aggressive 3-bettors: widen your 4-bet range, flat with more sets and strong suited hands, reduce steal attempts.',
+    'Live tells: bet timing, chip handling, posture changes, and bet sizing deviations are all exploitable patterns.',
+    'Table image matters: if you have been caught bluffing, tighten your value-to-bluff ratio. If you have been playing tight, your bluffs have higher fold equity.',
+    'In large-field WSOP events, recreational players are the primary profit source. Target them with value-heavy strategies.',
+    'Note-taking is a massive edge in live poker. Record bet sizing patterns, showdown tendencies, and position-based frequencies.',
+    'Multi-table awareness: know stack sizes, ICM implications, and player tendencies at adjacent tables if you may merge.',
+  ]},
+];
+var FC={
+  1:[
+    {q:'UTG open range at 40BB+?',a:'~15%: All pairs 22+, broadways ATo+/KJo+/QJs+/JTs, suited aces A2s+, suited kings KTs+. Fold low SCs and speculative hands.'},
+    {q:'What hands enter the dead zone at 30BB UTG?',a:'Suited connectors 67s-T9s, low pairs 22-66, speculative gappers. Too shallow for implied odds, too deep to shove. Fold.'},
+    {q:'KJo from CO at 30BB?',a:'Open. Standard CO open at any depth. At 30BB open for value, fold to a 3-bet.'},
+    {q:'Dead zone boundaries for speculative hands?',a:'23-40BB. Cannot realize implied odds (need 50BB+) and cannot shove profitably. Shove at 22BB or less, open at 40BB+.'},
+    {q:'BTN open range at 30BB?',a:'About 45-50%. Near any two decent cards. Position is the asset.'},
+    {q:'67s shove threshold from UTG?',a:'22BB or less. Dead zone 23-40BB. Open 40BB+. Exact shove line: 20-22BB.'},
+    {q:'Open raise sizing at 20-22BB?',a:'2x (min-raise), not 2.5x or 3x. At 20BB a 3x open gets jammed on constantly and you lose an extra BB every fold. 2x risks the minimum to pick up blinds and antes, and when 3-bet jammed you know exactly what to do: call off strong hands, fold the blockers.'},
+    {q:'What are the 3 opening buckets at 20-22BB?',a:'1. Raise/Call (open 2x, call a jam): QQ+, AK. 2. Open-Shove directly: TT-JJ, AQs, most strong hands — do not open and fold these. 3. Raise/Fold (open 2x, fold to a jam): blocker hands like A5s, A4s, KTs, KQs. These generate fold equity without risking your stack on a bad call.'},
+    {q:'Why not just shove QQ at 20BB instead of open 2x?',a:'Open 2x builds more value. Shoving 20BB folds out hands like 77-99, AJo, KQo that would happily call a 2x raise. By opening small you can get calls from a wider range, and if jammed on you call off happily. Shoving QQ directly leaves too much value on the table.'},
+    {q:'Why not just shove A5s at 20BB instead of raise/fold?',a:'A5s at 20BB is a raise/fold, not a direct shove. Shoving puts your full 20BB at risk with a weak hand. Opening 2x achieves the same fold equity (picking up blinds) at half the cost. If jammed on, fold — A5s is not strong enough to call off 20BB. The blocker value works fine even with just a 2x open.'},
+    {q:'3-bet sizing when facing a 2x open at 20BB?',a:'About 5-6BB (not 3x the open = 6BB, but scaled slightly). GTO Wizard recommends roughly 5BB. This is small enough to leave fold equity when 4-bet jammed, but large enough to put pressure. The small size entices villain to jam marginal hands into your strong 3-bet/call range.'},
+  ],
+  2:[
+    {q:'A72r (dry board) c-bet freq + sizing?',a:'High frequency (~75%), small size (25-33% pot). Dry board heavily favors raiser. Caller has few two-pairs, sets, or draws.'},
+    {q:'987tt (wet board) c-bet adjustment?',a:'Check more often (~50%) or use large sizing (60-75%) when betting. Board hits caller with sets, two-pairs, and draws.'},
+    {q:'Rule of 2 and 4?',a:'Multiply outs x4 on flop (two streets), x2 on turn (one street). 9-out flush draw is about 36% on flop.'},
+    {q:'When is a flop check-raise bluff correct?',a:'With strong combo draws (flush+OESD, pair+flush) on boards where PFR c-bets wide. Need fold equity plus real equity when called.'},
+    {q:'What is a blocker bet?',a:'Small OOP bet (20-25% pot) with marginal made hands to control pot size and reach showdown cheaply.'},
+  ],
+  3:[
+    {q:'A7s BTN vs UTG open at 40BB - 3-bet or call?',a:'Lean 3-bet. A7s blocks Ax combos, has good equity. Blocker value plus fold equity outweigh flatting.'},
+    {q:'Optimal resteal spot?',a:'Shoving over late-pos open from blinds at 15-25BB. Best when opener folds often and you have decent equity when called.'},
+    {q:'A7s multiway resteal - key math?',a:'Value drops with multiple potential callers. Combined calling frequencies multiply. ICM makes multiple callers catastrophic for payout equity.'},
+    {q:'Villain opens 4x. What changes?',a:'Scale 3-bet up (11-13x vs typical 7-8x), or flat more if deep. Lean toward flatting strong hands rather than isolating marginals.'},
+    {q:'Best 3-bet bluff candidates BTN vs CO?',a:'Suited aces A3s-A5s (block AK and AA). Suited K-x gappers. About 50% of 3-bet range should be bluffs for balance.'},
+    {q:'4-bet shove vs flat a 3-bet at 25BB?',a:'4-bet shove when pot-committed (villain 3-bets to about 8-9BB leaving 16-17BB). At 25BB most re-raises are shove-or-fold decisions.'},
+    {q:'Cold-call a 3-bet vs responding to a direct 3-bet — what is the difference?',a:'Critical distinction. Cold-calling = you have NOT opened yet; a player raised, another 3-bet, and you are calling both. Your range must be much stronger because you are OOP vs two ranges. Direct 3-bet response = you opened, someone 3-bet you; calling IP at 50BB+ with TT-QQ is standard. Cold-calling the same hands OOP into two strong ranges is a major leak.'},
+    {q:'LJ opens, CO 3-bets, you are on BTN with TT at 50BB. What is the correct action?',a:'4-bet shove or fold. Do NOT cold-call. If you flat, LJ may call behind creating a multiway pot where TT loses most of its value. Blinds can also squeeze. 4-bet shoving isolates and generates fold equity vs CO 3-bet range. At 50BB a 4-bet shove is ~8x the 3-bet — within efficient shove range. TT has ~45-50% equity vs a CO 3-bet range, making the shove profitable.'},
+  ],
+  4:[
+    {q:'SB vs BB - raise or complete?',a:'Raise about 40%, complete 15%, fold 45%. Completing gives BB perfect odds. Raise-or-fold is cleaner at normal depths.'},
+    {q:'BB defense frequency vs BTN open?',a:'Defend about 50-55% (call plus 3-bet). Great pot odds, last to act preflop. At 30BB call T8s, 65s, K5o that you would fold from BTN.'},
+    {q:'BB squeeze - when and with what?',a:'When BTN opens and SB cold-calls. Both have capped ranges. Use strong hands plus suited ace bluffs A3s-A5s.'},
+    {q:'SB complete range at 30BB?',a:'Complete suited hands T8s-K6s range, small pairs 22-55. Raise strong hands and steals. Avoid weak offsuit hands.'},
+    {q:'ICM - what is it and when does it matter?',a:'Converts chip stack into real dollar equity using payout structure. Matters near bubbles and final tables - a chip is worth LESS as you accumulate more.'},
+    {q:'ICM pressure on the bubble?',a:'Tighten early-position shoves when covered by big stacks. A min-cash has real value. Widen late-position steals vs short stacks who fear busting.'},
+    {q:'Push/fold threshold at 10BB UTG?',a:'About 30%+ of hands: all pairs 22+, Ax, Kxs, KTo+, broadways. Antes amplify the urgency to accumulate chips.'},
+    {q:'ICM vs ChipEV near final table bubble?',a:'ChipEV says shove wider. ICM says tighten - especially medium stacks. Bigger payout jump means tighter ICM-adjusted range.'},
+  ],
+};
+
+/* ══════════════════════════════════════════
+   200-QUESTION BANK
+   Categories: ranges(35) depth(20) short(25) cbet(25) 3bet(25) bvb(20) icm(25) oversize(15) + extras
+══════════════════════════════════════════ */
+var QBANK=[
+/* ── PREFLOP RANGES BY POSITION (35) ── */
+{c:'Ranges',q:'UTG at 40BB with 66. Open or fold?',o:['A) Open — pair is always an open','B) Fold — 66 is in the dead zone below 40BB','C) Open — set-mining odds justify it','D) Shove — not deep enough to open'],a:'A',e:'At 40BB+ you have enough implied odds to set-mine. 66 is a standard UTG open in the 15% range at this depth.'},
+{c:'Ranges',q:'HJ with KQo at 30BB. Action?',o:['A) Fold — KQo is too speculative','B) Open — strong broadway, standard HJ open','C) Limp — want to see a cheap flop','D) Shove — too short to play postflop'],a:'B',e:'KQo is a clear open from HJ at any normal depth. Strong broadway, good equity when called, standard.'},
+{c:'Ranges',q:'CO with T9s at 50BB. Action?',o:['A) Fold — T9s is too speculative from CO','B) Open — suited connector in position at 50BB+','C) Limp behind if others have limped','D) Shove — maximize fold equity'],a:'B',e:'At 50BB+ from CO you have the depth for implied odds and position to realize equity. T9s is a standard open.'},
+{c:'Ranges',q:'BTN with A2s at 25BB. Action?',o:['A) Fold — A2s is too weak at 25BB','B) Open — BTN range is wide, A2s always opens','C) Shove — 25BB is shove territory for A2s','D) Limp — A2s plays better in multiway pots'],a:'C',e:'At 25BB A2s is in the shove zone from BTN. Strong blockers on AA/AK, decent equity when called, and you generate fold equity.'},
+{c:'Ranges',q:'UTG at 100BB with 87s. Open or fold?',o:['A) Fold — 87s is never an UTG open','B) Open — 100BB gives enough implied odds for suited connectors','C) Limp — reduce variance','D) It depends on table dynamics only'],a:'B',e:'At 100BB you have deep enough stacks to realize 87s equity through implied odds and position. UTG suited connectors become playable at 50BB+ deep.'},
+{c:'Ranges',q:'SB with KJo at 30BB, folded to you. Action?',o:['A) Fold — KJo out of position is a trap','B) Complete — see a cheap flop','C) Raise — KJo is a standard SB open','D) Shove — 30BB is short stack territory'],a:'C',e:'KJo is strong enough to raise from SB at 30BB. Raise for value and fold equity. Completing puts you in a bad spot postflop.'},
+{c:'Ranges',q:'BB with 44, BTN opens, SB folds. Call or 3-bet?',o:['A) Always 3-bet — pairs want to play heads-up','B) Fold — 44 is too weak to defend','C) Call — getting good odds with a set-mining hand','D) It depends entirely on BTN sizing'],a:'C',e:'44 is a standard BB call vs BTN open at most depths. You have the right price, position isnt needed for set-mining, and you close the action.'},
+{c:'Ranges',q:'CO with ATo at 35BB. Action?',o:['A) Fold — ATo is in the dead zone','B) Open — ATo is strong enough for CO at 35BB','C) Shove — 35BB forces shove-or-fold','D) Limp — ATo plays poorly out of position'],a:'B',e:'ATo is a broadway hand with strong equity. It opens from CO at any depth including the dead zone. Only speculative hands enter the dead zone.'},
+{c:'Ranges',q:'UTG at 30BB with AKo. Action?',o:['A) Open — AKo is premium regardless of depth','B) Shove — 30BB is too short to open AKo','C) Fold — wait for a better spot','D) Limp — AKo plays better in multi-way pots'],a:'A',e:'AKo is premium and always opens from any position at any depth above 15BB. At 30BB open and call off a 3-bet.'},
+{c:'Ranges',q:'BTN at 22BB with QJo. Action?',o:['A) Open — wide BTN range includes QJo','B) Fold — QJo is marginal at 22BB','C) Shove — 22BB puts us in shove territory','D) Limp — QJo flops well'],a:'C',e:'At 22BB QJo is a shove from BTN. Strong enough broadway hand, generates fold equity, and has decent equity when called by the blinds.'},
+{c:'Ranges',q:'HJ at 40BB with J9s. Open or fold?',o:['A) Open — J9s has good implied odds at 40BB','B) Fold — J9s is marginal from HJ','C) Open only if no tight players behind','D) Shove — maximize fold equity'],a:'A',e:'At 40BB+ you cross the threshold for suited connectors. J9s from HJ is a standard open for implied odds and playability.'},
+{c:'Ranges',q:'UTG at 60BB with 22. Open or fold?',o:['A) Fold — 22 is too speculative from UTG','B) Open — pairs always open at 60BB+','C) Open only from BTN or later','D) Limp — set-mining only'],a:'B',e:'At 60BB you have the implied odds to set-mine even from UTG. 22 is a standard open — if you flop a set you can win a big pot.'},
+{c:'Ranges',q:'CO at 20BB with KTs. Action?',o:['A) Open — KTs is strong enough to open','B) Fold — too short to open KTs','C) Shove — 20BB is shove territory','D) Limp — KTs plays better in position'],a:'C',e:'At 20BB KTs is a shove from CO. Strong broadway suited hand with good equity when called and generates fold equity.'},
+{c:'Ranges',q:'BTN at 50BB with 54s. Open or fold?',o:['A) Fold — 54s is too speculative','B) Open — BTN range is wide enough for 54s at 50BB','C) Open only if SB and BB are weak','D) Limp — 54s needs to see cheap flops'],a:'B',e:'At 50BB with BTN position, 54s is in range. Good implied odds, great playability in position, and you cover the gap with stack depth.'},
+{c:'Ranges',q:'SB at 40BB with 98o, BB is a calling station. Raise or fold?',o:['A) Raise — 98o is in SB range at 40BB','B) Fold — 98o OOP vs calling station is -EV','C) Complete — see a cheap flop','D) Shove — remove postflop decisions'],a:'B',e:'Against a calling station who will call and play well postflop, 98o OOP loses its fold equity and plays poorly. Fold or complete only.'},
+{c:'Ranges',q:'UTG+1 (HJ) at 100BB with AJo. Action?',o:['A) Fold — AJo is a trap hand from early position','B) Open — AJo is a standard HJ open at any depth','C) Limp — AJo is reverse implied odds OOP','D) 3-bet if there was a limp'],a:'B',e:'AJo is a clear open from HJ. Strong broadway, top pair top kicker on J-high boards, and you have fold equity against the remaining positions.'},
+{c:'Ranges',q:'BTN at 30BB with 33. Action?',o:['A) Fold — too shallow to set-mine','B) Open — BTN range includes 33 even at 30BB','C) Shove — 30BB is shove territory for small pairs','D) Limp — small pairs need cheap flops'],a:'B',e:'From BTN you open 33 at any depth above 20BB. At 30BB you have fold equity when opened and can still set-mine if called.'},
+{c:'Ranges',q:'CO at 45BB with Q9s. Open or fold?',o:['A) Fold — Q9s is too speculative from CO','B) Open — Q9s is a standard CO open at 45BB+','C) Open only if tight players behind','D) Limp — suited cards need cheap flops'],a:'B',e:'Q9s from CO at 45BB is a standard open. Good suited connectivity, reasonable equity, and position helps realize value.'},
+{c:'Ranges',q:'UTG at 50BB with TT. Action?',o:['A) Open — TT is a strong pair, standard UTG open','B) Limp — TT flops poorly, keep pot small','C) Shove — TT is too vulnerable to flat at 50BB','D) Fold if there are aggressive players behind'],a:'A',e:'TT is a standard open from any position. At 50BB you can open and call off a 3-bet profitably, or fold to a 5-bet with short stacks.'},
+{c:'Ranges',q:'HJ at 25BB with A5s. Action?',o:['A) Open — A5s is a standard open','B) Fold — A5s is in the dead zone','C) Shove — 25BB puts A5s in shove territory','D) Limp — suited aces like multiway pots'],a:'C',e:'At 25BB A5s is a shove from HJ. Strong blocker, nut flush draw equity, and fold equity combine to make this a clear shove.'},
+{c:'Ranges',q:'CO at 30BB with KJo. Open or fold?',o:['A) Fold — KJo is dominated too often from CO','B) Open — KJo is a standard CO open at any depth','C) Open only if BTN is tight','D) Shove — avoid postflop decisions'],a:'B',e:'KJo from CO is a clear open at 30BB. Strong broadway, good position, and fold equity against the remaining players.'},
+{c:'Ranges',q:'BTN at 18BB with 77. Action?',o:['A) Open — 77 is strong enough to open','B) Shove — 18BB is shove territory for 77','C) Fold — 77 plays poorly short-stacked','D) Limp — small-medium pairs need to set-mine'],a:'B',e:'At 18BB 77 is a shove from BTN. Mid pair has good equity when called, strong fold equity, and you avoid difficult postflop spots.'},
+{c:'Ranges',q:'SB at 50BB with Q8s, BB is unknown. Action?',o:['A) Fold — Q8s OOP is too speculative','B) Raise — Q8s is in SB opening range at 50BB','C) Complete — Q8s plays well multiway','D) Shove — maximize fold equity'],a:'B',e:'At 50BB with a wide SB opening range Q8s is a standard raise. Good suited value, and at 50BB you can navigate postflop.'},
+{c:'Ranges',q:'UTG at 75BB with AQo. Action?',o:['A) Open — AQo is a premium UTG open','B) Limp — AQo is dominated by AK too often','C) Open and fold to 3-bet always','D) Open and 4-bet shove vs any 3-bet'],a:'A',e:'AQo is a clear UTG open at any depth. Top 10% hand. Open and navigate based on action — call 3-bets from position, fold to 4-bets unless very deep.'},
+{c:'Ranges',q:'Correct open sizing at 20BB in a tournament?',o:['A) 3x — standard sizing regardless of depth','B) Shove — 20BB is short enough to just jam everything','C) 2x (min-raise) — risk minimum, achieve same fold equity, lose less when 3-bet jammed','D) 2.5x — the universally correct tournament size'],a:'C',e:'At 20BB a 2x open is correct. Raising 3x means you fold to jams losing 3BB instead of 2BB — that extra BB is significant at this depth. The 2x open achieves the same steal objective at minimum cost, and when jammed on the decision is clear: call strong hands, fold blockers.'},
+{c:'Ranges',q:'BTN opens 2x at 20BB, you are in BB with A5s. Should you 3-bet jam or call?',o:['A) 3-bet jam — A5s has great blockers and equity','B) Call — see a cheap flop with suited ace','C) Fold — A5s is too weak','D) Small 3-bet to 5BB, fold to a jam'],a:'D',e:'A5s is a 3-bet/fold at 20BB, not a shove. Open 5-6BB, then fold if 4-bet jammed. A5s has blocker value (reduces AA/AK combos) making the small 3-bet profitable via folds. Shoving 20BB with A5s puts your tournament life at risk for insufficient gain. GTO Wizard shows a 5BB 3-bet is the correct play at this depth.'},
+{c:'Ranges',q:'You have QQ at 22BB, UTG. Open 2x or shove?',o:['A) Shove — get it all-in with the best hand preflop','B) Open 2x — want callers, shoving folds out too many hands you dominate','C) Open 3x to build a bigger pot','D) Limp — disguise your strength'],a:'B',e:'Open QQ to 2x at 22BB. Shoving 22BB with QQ folds out 77-JJ, AJo, KQo — all hands that would call a 2x raise and be dominated. Opening small and calling off a jam is more profitable. You want to be called by worse hands, and 2x gets more of those calls than a shove.'},
+{c:'Ranges',q:'What is the raise/fold line at 20BB and why is it profitable?',o:['A) There is no raise/fold at 20BB — always shove or fold','B) Open 2x with blocker hands like A5s and K-high suited hands, fold to a jam — costs 2BB to steal, wins 2.5BB in blinds and antes when it works','C) Only raise/fold with premium hands to set a trap','D) Raise/fold is only correct above 30BB'],a:'B',e:'The raise/fold line at 20BB is opening 2x with hands that have good blocker value but cannot call a shove (A5s, A4s, KTs, KQs). You invest 2BB to pick up 2.5BB in blinds+antes when it folds through — immediately profitable. When 3-bet jammed, fold. The blocker value on your hand means villain jams slightly less often, making the steal more profitable than a direct shove.'},
+{c:'Ranges',q:'HJ at 35BB with 76s. Open or fold?',o:['A) Open — 76s is a standard HJ open above 30BB','B) Fold — 76s is in the dead zone at 35BB','C) Open only if tight players in the blinds','D) Shove — 35BB makes this a shove'],a:'B',e:'76s from HJ at 35BB is squarely in the dead zone. Too shallow for implied odds (need 50BB+), too deep to shove profitably. Fold.'},
+{c:'Ranges',q:'CO at 20BB with AJo. Action?',o:['A) Open — AJo is strong enough to open','B) Fold — too short to open AJo','C) Shove — 20BB puts AJo in shove territory','D) Limp — AJo plays better in multiway pots'],a:'C',e:'At 20BB AJo is a shove from CO. Strong hand that generates fold equity and has great equity when called by any reasonable range.'},
+{c:'Ranges',q:'BTN at 100BB with K2s. Open or fold?',o:['A) Fold — K2s is too weak regardless of depth','B) Open — BTN range includes K2s at 100BB','C) Limp — K2s needs a cheap flop','D) Open only vs specific player types'],a:'B',e:'At 100BB with BTN position and fold equity against two players, K2s becomes a profitable open. Suited, has backdoor nut flush draws, blocker on KK.'},
+{c:'Ranges',q:'UTG at 40BB with 99. Action?',o:['A) Open — 99 is a standard UTG open','B) Shove — 99 is too strong to just open','C) Limp — 99 is vulnerable to overcards','D) Fold — too many overcards will come'],a:'A',e:'99 is a standard UTG open at any depth above 15BB. It is in the top 10% of hands and benefits from opening for value and fold equity.'},
+{c:'Ranges',q:'HJ with 65s at 60BB. Open or fold?',o:['A) Fold — 65s is marginal from HJ','B) Open — 60BB gives enough implied odds for 65s from HJ','C) Limp — suited connectors like multiway pots','D) Only open if CO and BTN are tight'],a:'B',e:'At 60BB from HJ you have the depth to justify 65s. Implied odds are strong, and you have reasonable position vs the blinds.'},
+{c:'Ranges',q:'CO at 15BB with QQ. Action?',o:['A) Open — QQ is premium, open at any depth','B) Shove — 15BB puts QQ in shove territory','C) Limp — trap with a strong hand','D) Open and fold to a shove'],a:'B',e:'At 15BB QQ is a shove from any position. Too shallow to open and fold, and you want the fold equity plus protection against bad runouts.'},
+{c:'Ranges',q:'BTN at 40BB with KTo. Action?',o:['A) Fold — KTo is too speculative from BTN','B) Open — BTN range is wide, KTo is standard','C) Limp — KTo plays better multiway','D) Open only vs tight blinds'],a:'B',e:'KTo is a standard BTN open at any depth. From BTN you open near 45-50% of hands and KTo is a solid broadway hand in that range.'},
+{c:'Ranges',q:'UTG at 30BB with 55. Action?',o:['A) Open — 55 is a standard UTG open','B) Fold — small pairs enter the dead zone at 30BB','C) Shove — 30BB is short stack territory','D) Limp — small pairs need cheap flops'],a:'B',e:'55 from UTG at 30BB is in the dead zone. Too shallow for set-mining implied odds, too deep to shove profitably. Fold and wait.'},
+{c:'Ranges',q:'SB at 30BB with AKs, BB is a nit. Action?',o:['A) Raise — AKs is premium, always raise','B) Complete — trap with a strong hand','C) Shove — 30BB is short enough for AKs shove','D) Raise small — keep pot manageable'],a:'A',e:'AKs is premium and always raises from SB regardless of depth or opponent. Raise and call off a 3-bet from the BB.'},
+{c:'Ranges',q:'CO at 75BB with J8s. Open or fold?',o:['A) Open — J8s is in CO range at 75BB','B) Fold — J8s is too speculative from CO','C) Limp — J8s needs a cheap flop','D) Open only if BTN is tight'],a:'A',e:'At 75BB from CO, J8s is a playable hand with good implied odds, suited connectivity, and enough stack to realize equity in position.'},
+/* ── STACK DEPTH DECISIONS (20) ── */
+{c:'Depth',q:'Dead zone definition?',o:['A) 10-20BB where you should shove everything','B) 23-40BB where speculative hands lose EV — too shallow for implied odds, too deep to shove','C) 40-60BB where you play cautiously','D) Any depth below 50BB'],a:'B',e:'The dead zone is 23-40BB. Speculative hands like suited connectors and small pairs cannot realize equity (too shallow) and cannot shove profitably (too deep).'},
+{c:'Depth',q:'At 38BB with T9s from UTG. Action?',o:['A) Open — approaching the 40BB threshold','B) Fold — still in the dead zone','C) Shove — 38BB is close enough to shove territory','D) Open only if antes are large'],a:'B',e:'38BB is still inside the dead zone for T9s from UTG. The threshold to open suited connectors is 40BB+. Fold.'},
+{c:'Depth',q:'At what stack depth does set-mining become profitable with small pairs?',o:['A) 25BB+ with any pair','B) 40BB+ in position','C) 50BB+ with deep implied odds stacks','D) Only profitable with antes'],a:'C',e:'You need roughly 15x implied odds to set-mine profitably. At 50BB+ you can win a large enough pot when you hit. Shallower stacks cannot justify the investment.'},
+{c:'Depth',q:'At 22BB with 67s from CO. Action?',o:['A) Open — 67s is playable at 22BB','B) Fold — dead zone','C) Shove — 22BB is at the shove threshold for 67s','D) Limp — suited connectors like multiway pots'],a:'C',e:'22BB is exactly the shove threshold for 67s from CO. It generates fold equity and has decent equity when called. Shoving beats both opening and folding.'},
+{c:'Depth',q:'Why are suited connectors worse at 30BB than 60BB?',o:['A) They are not, suited connectors play the same at any depth','B) At 30BB you cannot win a big enough pot to justify the preflop investment when you hit','C) Opponents play better at lower stakes','D) The blinds increase faster at 30BB'],a:'B',e:'Implied odds require deep stacks. At 30BB if you flop a flush draw and get it in, the pot is not big enough relative to your stack to justify speculative play preflop.'},
+{c:'Depth',q:'At 50BB you open CO with 98s. BTN 3-bets. Action?',o:['A) Always fold — 98s cannot call a 3-bet','B) Call — deep enough for implied odds in position','C) 4-bet shove — maximize fold equity','D) 4-bet small and fold to a 5-bet'],a:'B',e:'At 50BB with 98s in position vs a 3-bet, you have the implied odds and position to call profitably. You can outplay opponents when you connect with the board.'},
+{c:'Depth',q:'At 25BB with KK from UTG. Raise or shove?',o:['A) Open — KK should always open, never shove preflop','B) Shove — 25BB means KK should shove for maximum value','C) Open — you want action, shoving folds too many hands','D) Open to 2.5BB to build the pot slowly'],a:'A',e:'At 25BB you open KK. You want action and shoving often folds everyone. Open, and if someone 3-bets you call off your stack happily.'},
+{c:'Depth',q:'At 40BB the effective stack is reached. What changes about speculative hands?',o:['A) Nothing changes — always fold speculative hands','B) Suited connectors and small pairs become profitable opens for the first time in the dead zone','C) You should only play premium hands at 40BB','D) Position matters less at 40BB'],a:'B',e:'At 40BB+ suited connectors and small pairs re-enter your opening range. You have enough depth for implied odds (set-mining, hitting straights/flushes) to justify the investment.'},
+{c:'Depth',q:'You have 28BB at a WSOP tournament. Antes are running. What is your primary preflop strategy?',o:['A) Limp frequently to see cheap flops','B) Play tight and wait for premium hands','C) Open tight broadway range, shove strong hands and good blockers','D) Call off shoves widely to accumulate chips'],a:'C',e:'At 28BB with antes, you are in the dead zone for speculative hands but can still open broadway hands. Shove AJs+, 99+, strong aces. Fold marginal speculative hands.'},
+{c:'Depth',q:'At 35BB with AJo from HJ. There has been one limp. Action?',o:['A) Raise — AJo is strong enough to isolate','B) Limp behind — AJo plays better multiway','C) Fold — AJo is dominated too often','D) Shove — 35BB + dead money makes this a shove'],a:'A',e:'AJo is a clear raise to isolate the limper from HJ at 35BB. You have a strong hand, fold equity, and position on the limper.'},
+{c:'Depth',q:'At 15BB should you ever open-raise instead of shove?',o:['A) Yes — opening keeps pot smaller and gives options','B) No — at 15BB all opens are effective shoves, just shove directly','C) Only with AA and KK','D) Yes if there are aggressive players behind you'],a:'B',e:'At 15BB an open followed by a call commitment is essentially a shove anyway. Shoving directly is cleaner, maximizes fold equity, and avoids awkward spots.'},
+{c:'Depth',q:'You have 45BB and face a 3-bet to 9BB. You have QQ. Action?',o:['A) Fold — QQ is too vulnerable against a 3-bet range','B) Call — keep pot manageable','C) 4-bet shove — at 45BB QQ is a clear 4-bet shove','D) 4-bet small to 18BB'],a:'C',e:'At 45BB with QQ facing a 3-bet, 4-bet shoving is correct. You are not deep enough to flat and play postflop profitably with an overpair worry. Get it in.'},
+{c:'Depth',q:'At 60BB with A5s from SB facing a BTN open. Action?',o:['A) Fold — A5s OOP is too speculative','B) Call — implied odds and blocker value justify calling','C) 3-bet — A5s is an excellent bluff 3-bet with blockers','D) Always fold suited aces from SB vs BTN'],a:'C',e:'A5s is a premium 3-bet bluff from SB vs BTN at 60BB. It blocks AK and AA combos, has nut flush potential, and generates fold equity.'},
+{c:'Depth',q:'What is the minimum depth to open 22 from UTG?',o:['A) Any depth — pairs always open from UTG','B) 20BB — pairs shove below this','C) 40BB+ — need implied odds to set-mine','D) 30BB — small pairs are in range at this depth'],a:'C',e:'Small pairs from UTG need 40BB+ to open. Below that you cannot realize set-mining equity. Between 20-39BB small pairs are in the dead zone — shove at 20BB or less.'},
+{c:'Depth',q:'At 30BB with 88 from CO. Open or shove?',o:['A) Open — 88 is strong enough to open at 30BB','B) Shove — 30BB puts 88 in shove territory','C) Fold — 88 is in the dead zone','D) Depends on the players in the blinds'],a:'A',e:'88 is above the dead zone threshold. Strong pairs (77+) open at 30BB. Only small pairs (22-66) and speculative hands fall into the dead zone.'},
+{c:'Depth',q:'Tournament levels just increased. You went from 40BB to 32BB. How do your suited connectors change?',o:['A) No change — same strategy at 32BB as 40BB','B) Drop suited connectors from UTG/HJ — you have entered the dead zone','C) Shove all suited connectors now','D) Only play suited connectors from BTN now'],a:'B',e:'At 32BB you have crossed into the dead zone for suited connectors. Drop them from UTG and HJ. You can still open them from CO/BTN/SB where the range advantage is higher.'},
+{c:'Depth',q:'At 55BB with TT in the BB, BTN opens, SB calls. Action?',o:['A) Fold — TT plays poorly multiway','B) 3-bet — TT is strong enough to squeeze here','C) Call — implied odds multiway with an overpair','D) It depends entirely on BTN sizing'],a:'B',e:'TT is a strong hand and squeezing here isolates the field or wins the pot. Against the BTN open range TT is often the best hand. Squeeze for value and fold equity.'},
+{c:'Depth',q:'You have 70BB. The effective stack is 30BB because your opponent is short. How does this change your opening strategy?',o:['A) No change — your strategy is based on your stack','B) Play as if you have 30BB effective — shorter stack drives the action','C) Always fold — effective short stack creates too much risk','D) Shove immediately with any good hand'],a:'B',e:'Effective stack depth is what matters. When playing against a 30BB stack, your implied odds are based on their 30BB, not your 70BB. Adjust your strategy to the effective depth.'},
+{c:'Depth',q:'At 42BB with 65s from BTN. Open or fold?',o:['A) Fold — 65s is marginal at 42BB','B) Open — just crossed 40BB threshold, 65s opens from BTN','C) Shove — maximize fold equity','D) Limp — suited connectors need multiway action'],a:'B',e:'At 42BB you have crossed the 40BB threshold where suited connectors become profitable. From BTN you can open 65s for implied odds and position.'},
+{c:'Depth',q:'Monster Stack event starts with 60,000 chips and 100/200 blinds. That is 300BB. How does this affect early strategy?',o:['A) Play ultra-tight since you have so many chips to protect','B) Play very deep stack poker — open wider, implied odds are massive, speculative hands are very profitable','C) No change — strategy is the same at any depth','D) Shove more often to maximize fold equity'],a:'B',e:'300BB deep stacks fundamentally change poker. Implied odds are enormous, suited connectors and small pairs are extremely profitable, and position is worth even more than usual.'},
+/* ── SHORT STACK PUSH/FOLD (25) ── */
+{c:'Short Stack',q:'At 12BB UTG with A8o. Shove or fold?',o:['A) Fold — A8o from UTG is too risky','B) Shove — A8o is in the shove range at 12BB UTG','C) Open to 2.5BB','D) Limp and evaluate'],a:'B',e:'At 12BB A8o from UTG is a clear shove. Any Ax hand with strong kicker is in the UTG shove range at this depth.'},
+{c:'Short Stack',q:'At 8BB in the BB with 73o, SB shoves. Call or fold?',o:['A) Fold — 73o is too weak to call a shove','B) Call — getting 2:1 odds, almost any two cards are a call','C) Call only if SB is aggressive','D) Always fold non-paired hands below T-high'],a:'B',e:'At 8BB you are getting 2:1 pot odds and need only about 33% equity. 73o has roughly 35-40% equity vs most shove ranges. Call.'},
+{c:'Short Stack',q:'At 20BB with KQo from UTG. Shove or open?',o:['A) Open to 2.5BB — KQo plays better with room to navigate','B) Shove — 20BB puts KQo in shove territory from UTG','C) Fold — KQo is dominated too often from UTG','D) Limp — KQo flops well'],a:'B',e:'At 20BB KQo is a shove from UTG. Strong broadway hand with great equity, fold equity, and you avoid difficult postflop spots.'},
+{c:'Short Stack',q:'15BB at the bubble. BTN shoves, you have JJ in the BB. Call or fold?',o:['A) Fold — ICM says protect your stack at the bubble','B) Call — JJ has more than enough equity vs BTN shove range','C) It depends on stack sizes of other players','D) Always fold anything below QQ at the bubble'],a:'C',e:'JJ is a call in most cases, but ICM matters here. If there are shorter stacks about to bust and a min-cash matters, you might fold JJ. Assess the ICM impact first.'},
+{c:'Short Stack',q:'At 10BB with 55 from CO, two players behind. Shove or fold?',o:['A) Fold — 55 is vulnerable with players behind','B) Shove — 55 is a standard shove from CO at 10BB','C) Open to 2x — keep the pot smaller','D) Limp — set-mine cheaply'],a:'B',e:'55 is a shove from CO at 10BB. Good equity (~50%) vs overcards, fold equity against the players behind, and position on the blinds if called.'},
+{c:'Short Stack',q:'At 18BB with A2s from HJ. Action?',o:['A) Fold — A2s is too weak from HJ','B) Open — A2s is playable at 18BB','C) Shove — 18BB puts A2s in shove territory','D) Limp — suited aces need cheap flops'],a:'C',e:'At 18BB A2s is a shove from HJ. Strong blocker on AA/AK, nut flush potential when called, and enough fold equity to make it profitable.'},
+{c:'Short Stack',q:'At 22BB with KJo from BTN. Action?',o:['A) Open — KJo is too strong to just shove','B) Shove — 22BB is at the top of shove territory for KJo','C) Fold — KJo gets dominated by AK and AJ','D) Limp — KJo plays well multiway'],a:'B',e:'At 22BB KJo is a shove from BTN. Strong broadway hand, generates fold equity against the blinds, and has decent equity when called.'},
+{c:'Short Stack',q:'At 15BB with Q8s from SB, BB is a calling station. Shove or fold?',o:['A) Shove — Q8s is in range regardless of opponent tendency','B) Fold — against a calling station Q8s loses its fold equity advantage','C) Shove — suited hands always shove at 15BB','D) Complete — see a cheap flop'],a:'B',e:'Against a calling station you lose fold equity. Q8s is borderline at 15BB and is much weaker when the fold equity component is gone. Fold or complete.'},
+{c:'Short Stack',q:'At 12BB with TT from UTG. Shove or open to 2.5BB?',o:['A) Open to 2.5BB — TT is strong enough to build a pot','B) Shove — at 12BB open-shoving TT maximizes value','C) Limp — trap with a strong hand','D) Fold — too many overcards'],a:'B',e:'At 12BB you shove TT. An open-raise and then fold to a 3-bet wastes your hand. Shoving gets called by worse pairs and gets folds from overcards.'},
+{c:'Short Stack',q:'At 20BB with AA from UTG. Shove or open?',o:['A) Open to 2.5BB — AA wants callers, not folds','B) Shove — 20BB means AA should shove for value','C) Limp — maximize action multiway','D) Open to 2x to encourage calls'],a:'A',e:'At 20BB you open AA. Shoving folds hands that would call a raise and continue. Open to 2.5BB and call any 3-bet. You want to be called.'},
+{c:'Short Stack',q:'At 17BB from BTN with K9o. Action?',o:['A) Fold — K9o is too marginal','B) Open to 2BB','C) Shove — K9o is in BTN shove range at 17BB','D) Limp behind if there are limpers'],a:'C',e:'At 17BB K9o is a shove from BTN. Decent blocking cards, fold equity against two players, and acceptable equity when called.'},
+{c:'Short Stack',q:'At 8BB in CO with 96s. Shove or fold?',o:['A) Fold — 96s is too speculative at any depth','B) Shove — at 8BB almost any two decent cards shove','C) Open to 2x','D) Limp — suited cards need cheap flops'],a:'B',e:'At 8BB you are desperately short and need to accumulate chips. 96s suited has decent equity when called and generates fold equity. Shove.'},
+{c:'Short Stack',q:'WSOP Super Turbo Bounty at 15BB. Your neighbor has 10BB. You have A9o from HJ. Shove or open?',o:['A) Open to 2.5BB — A9o is strong enough to open','B) Shove — 15BB puts A9o in shove territory','C) Fold — wait for a better spot','D) Limp to see a cheap flop'],a:'B',e:'In a Super Turbo at 15BB you shove A9o from HJ. Strong ace, fold equity, and in turbo formats accumulating chips is more important than ICM caution.'},
+{c:'Short Stack',q:'At 19BB with JTo from BTN. Shove or open?',o:['A) Open — JTo plays well postflop','B) Shove — 19BB puts JTo in shove territory from BTN','C) Fold — JTo gets dominated','D) Limp — JTo needs to see flops'],a:'B',e:'At 19BB JTo is a shove from BTN. Connected broadway, fold equity, and decent equity vs the blind calling ranges.'},
+{c:'Short Stack',q:'At 22BB with 77 in the BB, CO shoves. Call or fold?',o:['A) Fold — 77 has too many overcards','B) Call — 77 has about 50% equity vs CO shove range and getting good odds','C) It depends entirely on player reads','D) Only call if CO is very aggressive'],a:'B',e:'At 22BB vs a CO shove, 77 has roughly 52-55% equity vs a reasonable shove range. With pot odds included this is a profitable call.'},
+{c:'Short Stack',q:'At 15BB with A5o from UTG. Shove or fold?',o:['A) Shove — A5o is in UTG shove range at 15BB','B) Fold — A5o from UTG is dominated too often','C) Open to 2.5BB','D) Limp behind'],a:'A',e:'At 15BB A5o is a shove from UTG. Decent blocker, fold equity, and acceptable equity vs calling ranges. With antes, urgency increases.'},
+{c:'Short Stack',q:'At 20BB with KK from BTN. Shove or open?',o:['A) Open to 2.5BB — KK wants callers','B) Shove — KK should shove at 20BB for maximum value','C) Limp to disguise hand strength','D) Open to 4x to get it in'],a:'A',e:'Open KK at 20BB. You want callers. Shoving KK often folds worse hands that would gladly call a raise. Open and go all-in vs any 3-bet.'},
+{c:'Short Stack',q:'Colossus tournament, 18BB. ATo from HJ. Shove or open?',o:['A) Open — ATo is too strong to just shove','B) Shove — 18BB is shove territory for ATo from HJ','C) Fold — ATo gets dominated by AJ, AQ, AK','D) Limp and hope to see a cheap flop'],a:'B',e:'At 18BB ATo shoves from HJ. Strong ace, good fold equity, and great equity vs blind calling ranges. In the Colossus field many players call too loose, making this even better.'},
+{c:'Short Stack',q:'At 10BB with 33 from SB, BB is a strong player. Shove or complete?',o:['A) Complete — set-mine cheaply','B) Shove — 33 generates fold equity and has decent equity','C) Fold — 33 is too weak','D) Depends on reads only'],a:'B',e:'At 10BB you shove 33 from SB. Completing gives a skilled BB player a chance to outplay you postflop. Shoving removes that advantage.'},
+{c:'Short Stack',q:'At 25BB with QQ from UTG. Open or shove?',o:['A) Shove — QQ at 25BB should just get it in','B) Open to 2.5BB — QQ wants value, not folds','C) Open to 3BB — slightly larger to build pot','D) Limp to disguise strength'],a:'B',e:'Open QQ at 25BB. Shoving folds hands you dominate. Open and call off any 3-bet — at 25BB you are committed to QQ regardless.'},
+{c:'Short Stack',q:'At 16BB UTG in the Freezeout event with J9s. Shove or fold?',o:['A) Shove — J9s has good equity and fold equity','B) Fold — J9s is too speculative from UTG','C) Open to 2x','D) Limp and see a flop'],a:'B',e:'J9s from UTG at 16BB is a fold. Too many callers can come in behind you, and UTG shove ranges are tighter. Wait for a better position or better hand.'},
+{c:'Short Stack',q:'At 13BB from BTN with A3o. SB is a nit. Action?',o:['A) Fold — A3o is too weak','B) Shove — A3o from BTN vs likely tight blinds is a clear shove','C) Open to 2x','D) Limp — A3o plays poorly as a shove'],a:'B',e:'At 13BB from BTN vs a tight SB, A3o shoves for fold equity. Even when called you have blocker equity. A3o is clearly in the BTN shove range here.'},
+{c:'Short Stack',q:'At 20BB with 99 in the BB, UTG shoves. Call or fold?',o:['A) Fold — 99 vs UTG shove range is a coinflip at best','B) Call — 99 is comfortably ahead of UTG 20BB shove range','C) It depends on tournament stage','D) Fold unless you cover the shoving player'],a:'B',e:'99 vs UTG 20BB shove range is actually a favourite. UTG shoves wide enough (pairs, Ax, broadways) that 99 has around 55-60% equity. Call.'},
+{c:'Short Stack',q:'At 15BB, the antes make the effective pot larger. How does this affect your shove range?',o:['A) No effect — antes do not change push/fold ranges','B) Widen your shove range — antes increase the reward for winning blinds+antes uncontested','C) Tighten your range — more money in the pot means more risk','D) Only affects BB vs SB decisions'],a:'B',e:'Antes increase the prize for stealing and make shoves more profitable. Your shove range should widen by about 5-10% of hands when antes are running.'},
+{c:'Short Stack',q:'Super Turbo Bounty at 12BB with KQs from CO. Action?',o:['A) Open to 2x — KQs is too strong to shove','B) Shove — 12BB is shove territory, KQs is an excellent shove hand','C) Fold — wait for a stronger hand','D) Limp — KQs plays well multiway'],a:'B',e:'KQs is a premium shove at 12BB from CO. Strong suited broadway, great equity when called, good fold equity vs the field. In a bounty format hitting a call is even better.'},
+/* ── C-BET SIZING AND BOARD TEXTURE (25) ── */
+{c:'C-Bet',q:'You open CO, BTN calls. Flop is K72 rainbow. Optimal c-bet strategy?',o:['A) Check — dry boards favor the caller','B) Bet large — 70% pot to protect your range','C) Bet small — 25-33% pot, board heavily favors your range','D) Check-raise if bet into'],a:'C',e:'K72 rainbow is extremely dry and heavily favors the preflop raiser. Use a small bet (25-33% pot) at high frequency. Caller has few strong hands on this board.'},
+{c:'C-Bet',q:'You open BTN, BB calls. Flop is 986 with two clubs. Optimal c-bet strategy?',o:['A) Bet large or check — wet board requires polarized betting','B) Bet small at high frequency','C) Always check — wet boards favor the defender','D) Bet pot — protect your equity'],a:'A',e:'On a wet connected board like 986cc, you should bet large when you bet (to charge draws) or check with your bluffs. Small bets do not charge draws and give away cheap equity.'},
+{c:'C-Bet',q:'What is the primary factor determining c-bet sizing?',o:['A) Your hand strength','B) Stack depth','C) Board texture — how well it connects with each range','D) Position only'],a:'C',e:'Board texture is the primary driver of c-bet sizing. Dry boards that favor the raiser use small bets. Wet boards that favor the caller use large bets or checks.'},
+{c:'C-Bet',q:'You open HJ, CO calls. Flop is QJT rainbow. C-bet or check?',o:['A) Always c-bet — you are the preflop aggressor','B) Check frequently — this board connects heavily with CO calling range','C) Bet large — protect your strong hands','D) Bet small — probe for weakness'],a:'B',e:'QJT rainbow connects extremely well with a CO calling range (two pairs, sets, straights). Your range advantage is minimal. Check frequently and respond to the CO.'},
+{c:'C-Bet',q:'You 3-bet SB vs BTN open, BTN calls. Flop is A53 rainbow. C-bet or check?',o:['A) Check — aces are dangerous','B) Bet small — A-high boards heavily favor 3-bettor range','C) Bet large — protect your strong hands','D) It depends entirely on your specific hand'],a:'B',e:'A53r is a dream board for the 3-bettor. You have AK, AA, KK, QQ, JJ, TT — hands BTN rarely has. Bet small at high frequency and extract value.'},
+{c:'C-Bet',q:'On a T65 two-tone flop, when should you check as the preflop raiser?',o:['A) Never — always c-bet as the aggressor','B) With your weakest hands only','C) With bluffs that have low equity — your range advantage is minimal on this board','D) Only when in position'],a:'C',e:'T65 two-tone connects with the caller\'s range well. Check your weakest bluffs (low equity hands without draws) and bet with draws and made hands.'},
+{c:'C-Bet',q:'What sizing should you use on a paired board like KK7?',o:['A) Large — paired boards are dangerous','B) Small — paired boards heavily favor the preflop raiser','C) Check — paired boards are traps','D) The same sizing you use on every board'],a:'B',e:'Paired boards with a high card like KK7 heavily favor the preflop raiser who has AK, KQ, KJ, and all pairs in range. Use small sizing at high frequency.'},
+{c:'C-Bet',q:'You are OOP after c-betting the flop. Turn is a blank. Should you barrel?',o:['A) Always barrel — maintain aggression','B) Barrel with hands that improved or have strong equity, check-fold bluffs','C) Never barrel OOP — too dangerous','D) Barrel sizing depends on exact card only'],a:'B',e:'OOP double-barreling should be done with equity (flush draws, straight draws, top pair) or strong made hands. Pure bluffs without equity get into trouble vs strong ranges.'},
+{c:'C-Bet',q:'On a AKQ rainbow flop what is your c-bet frequency?',o:['A) Never — your range is capped and vulnerable','B) High frequency small bets — this board smashes your 3-bet range','C) Check — too dangerous, opponent could have the nuts','D) Polarized bets only — large or check'],a:'B',e:'AKQ rainbow is an elite board for the preflop raiser or 3-bettor. You have AK, KK, QQ, AA — opponent rarely does. Bet small at near 100% frequency.'},
+{c:'C-Bet',q:'What is a probe bet?',o:['A) A small bet on the river to induce a bluff raise','B) An OOP bet on the turn after checking the flop to the preflop raiser who also checked','C) A large isolation bet preflop','D) A check-raise on a wet board'],a:'B',e:'A probe bet is made OOP on the turn when both players checked the flop. It represents a hand that improved on the turn and denies equity to the raiser who showed weakness.'},
+{c:'C-Bet',q:'Flop is 882 rainbow. You opened BTN, BB called. C-bet or check?',o:['A) Check — paired boards are traps','B) Bet small at very high frequency — heavily favors your range','C) Bet large — force folds','D) Check and evaluate BB tendency'],a:'B',e:'882 rainbow is an extremely dry board that overwhelmingly favors the BTN opener. You have 88, AA, KK, QQ, JJ — BB rarely does. Bet small at near 100% frequency.'},
+{c:'C-Bet',q:'You opened UTG, HJ called. Flop is 743 two-tone. C-bet strategy?',o:['A) Always bet — UTG range crushes this board','B) Check frequently — low boards connect well with HJ calling range which includes many suited connectors and small pairs','C) Bet large to price out draws','D) Check-call any bet'],a:'B',e:'Low connected boards hit the caller\'s range (small pairs, suited connectors) harder than the opener\'s. UTG rarely has 43s or 76s. Check your air frequently here.'},
+{c:'C-Bet',q:'On a JJ4 board, the turn is another 4 (board: JJ44). Action?',o:['A) Always barrel — double paired boards are strong','B) Check frequently — this board heavily favors the BB calling range','C) Bet large to protect your Jx hands','D) The action should be the same as on the flop'],a:'B',e:'Double paired boards reduce your range advantage. BB calling range includes 44 and many Jx hands. Check more frequently on JJ44 and be cautious about barreling.'},
+{c:'C-Bet',q:'You 3-bet KK, get called in position. Flop is A72 rainbow. What now?',o:['A) Give up — you missed the board','B) C-bet — you have the highest overpairs plus AK, so you still have range advantage even with an ace','C) Check-fold — your hand is probably beat','D) Shove — protect against draws'],a:'B',e:'Even when you miss with KK on an ace-high board, your 3-bet range includes AK, AQ, AJ so you still have range advantage. C-bet and continue balancing with KK as a bluff catcher.'},
+{c:'C-Bet',q:'What is a delayed c-bet?',o:['A) A c-bet made on the turn after checking the flop','B) A slow-played strong hand','C) A bet made after a long tank','D) A second bullet on the river'],a:'A',e:'A delayed c-bet is when you check the flop as the preflop raiser and then bet the turn. Effective on boards where checking the flop is correct but turns improve your range.'},
+{c:'C-Bet',q:'Flop is Q84 with two spades. You opened BTN, BB called. Sizing?',o:['A) Small — 25% pot','B) Medium — 50% pot','C) Large — 70-80% pot','D) Check — too many draws'],a:'C',e:'Q84 two-tone is a semi-wet board with flush draws. Use larger sizing (70%+) to charge draws and protect made hands. Small bets give draws cheap equity.'},
+{c:'C-Bet',q:'On the river with a busted draw, you have zero equity. When should you bluff?',o:['A) Never — bluffing the river is too risky','B) When your bet will generate enough folds to show a profit given the pot odds you are laying','C) Only with the nut blocker','D) Always — make opponent uncomfortable'],a:'B',e:'River bluffing is about expected value. Bet when folds are frequent enough to profit. For example betting 67% pot requires >40% fold frequency. Having blockers to the nuts increases profitability.'},
+{c:'C-Bet',q:'You have top pair good kicker (TPGK) on a wet board. Should you bet large or small?',o:['A) Small — protect your range and extract value','B) Large — you need to charge draws','C) Check — TPGK is a check-call hand','D) Depends entirely on opponent type'],a:'B',e:'TPGK on a wet board should bet large. You have a strong hand that wants to be called by worse, but you also need to charge flush draws and straight draws that have significant equity.'},
+{c:'C-Bet',q:'What does it mean to have a "range advantage" on a board?',o:['A) Having more strong hands in your range than your opponent on that specific board texture','B) Having a higher overall hand frequency','C) Having more draws than your opponent','D) Always being in position'],a:'A',e:'Range advantage means your overall range connects better with the board texture than your opponent\'s range. Having range advantage justifies betting more frequently at smaller sizes.'},
+{c:'C-Bet',q:'Board is T98 rainbow. You raised preflop, BB called. What percentage of your range should you c-bet?',o:['A) 80-100% — always c-bet as the aggressor','B) 30-40% — BB\'s range connects too well with this board','C) 0% — always check this board type','D) 50% — split your range evenly'],a:'B',e:'T98 rainbow is one of the best boards for the BB caller. They have suited connectors, two pairs, straights that you often do not have. Check frequently and pick spots carefully.'},
+{c:'C-Bet',q:'You open CO, BTN calls, BB calls. Flop is A32 rainbow. Multiway c-bet strategy?',o:['A) C-bet aggressively — you have range advantage with the ace','B) Check — multiway pots require much stronger hands to c-bet profitably','C) Always bet large multiway','D) Same strategy as heads-up'],a:'B',e:'In multiway pots you need significantly stronger hands to c-bet profitably because multiple opponents must fold. Check boards more often even with range advantage in multiway spots.'},
+{c:'C-Bet',q:'What is the main goal of a small c-bet on a dry board?',o:['A) To build the pot for later streets','B) To make a profit from air hands and thin value hands that benefit from charging the few draws','C) To represent a monster hand','D) To protect against runner-runner draws'],a:'B',e:'Small bets on dry boards extract thin value from worse made hands, keep the pot small with medium strength hands, and make a profit from the few draws that exist at favorable odds.'},
+{c:'C-Bet',q:'Flop is K73 rainbow. You check as the preflop raiser. BB bets. What does this tell you?',o:['A) BB always has a strong hand','B) BB is likely probing with a medium hand or draw, not a monster','C) BB always has a 7 or 3','D) Nothing useful about BB range'],a:'B',e:'When BB bets into you after you checked on a K-high dry board, they often have Kx or a probe bet with a medium holding. Their range is capped — they would check-raise the flop with monsters.'},
+{c:'C-Bet',q:'On a 432 two-tone flop what is the correct c-bet strategy for the preflop raiser?',o:['A) High frequency small bets — you have range advantage','B) Check frequently — this board hits the BB\'s range harder','C) Bet large to deny equity','D) Only bet with a set or overpair'],a:'B',e:'432 is one of the worst flops for the preflop raiser. The BB has 65s, 54s, 43s, small pairs — all the hands that connect. You have very little. Check frequently.'},
+{c:'C-Bet',q:'You have 88 on a KQ7 board. Should you c-bet?',o:['A) Yes — 88 is a made hand, always bet','B) It depends on position and range considerations','C) No — 88 is too vulnerable on K-high boards','D) Yes but check-fold to any raise'],a:'B',e:'88 on KQ7 is a medium strength hand. In position you can bet small to extract value from weaker pairs. OOP you might check to control pot size. Neither always-bet nor always-check is correct.'},
+/* ── 3-BET SQUEEZE RESTEAL (25) ── */
+{c:'3-Bet',q:'What percentage of your 3-bet range should be bluffs for a balanced strategy?',o:['A) 0% — 3-bets should always be for value','B) About 50% — roughly equal value and bluffs','C) 75% — mostly bluffs with some value','D) Depends entirely on opponent tendencies'],a:'B',e:'A balanced 3-bet range has roughly equal value and bluff hands. This makes you unexploitable. Against passive opponents you can tighten the bluffs; against folders you can widen them.'},
+{c:'3-Bet',q:'Best position to execute a squeeze play?',o:['A) UTG — maximum fold equity','B) BTN or CO — good fold equity with position postflop if called','C) BB — you are already in the pot','D) SB — cheapest squeeze'],a:'B',e:'Squeezing from BTN or CO gives you fold equity against the opener and caller plus position if called. This is the ideal combination for a profitable squeeze.'},
+{c:'3-Bet',q:'UTG opens, you 3-bet CO, both fold back to UTG who 4-bets. You have AJs. Action?',o:['A) Always call — AJs is too good to fold','B) Fold — AJs is a 3-bet bluff that should fold to a 4-bet from UTG','C) 5-bet shove — maximize pressure','D) Call and fold all bad flops'],a:'B',e:'AJs is a 3-bet bluff from CO vs UTG. When UTG 4-bets they have a strong linear range (AA, KK, QQ, AK) that dominates AJs. Fold as planned.'},
+{c:'3-Bet',q:'Why is A5s a better 3-bet bluff than A9s?',o:['A) A5s has better flush potential','B) A5s has stronger blockers — the 5 does not block many calling hands while A blocks AA and AK','C) A9s is too strong to use as a bluff','D) There is no difference'],a:'B',e:'A5s blocks AK and AA (reducing their combos) while the 5 kicker does not block many strong hands opponents would call with. A9s blocks fewer top-of-range hands and has reverse blocking issues.'},
+{c:'3-Bet',q:'CO opens, you 3-bet BTN, SB cold-calls, CO calls. Now what?',o:['A) Always c-bet small — you are the aggressor','B) Check frequently — multiway pots reduce the effectiveness of your 3-bet range','C) Bet large — you have the most premium hands','D) Give up on any flop you miss'],a:'B',e:'Multiway pots after a 3-bet are tricky. Multiple players means someone is likely connected with the board. Check more, bet strong hands, and be cautious with pure bluffs.'},
+{c:'3-Bet',q:'At 30BB BTN opens to 2.5BB. You are in SB with KQo. Best action?',o:['A) Fold — KQo OOP is too dangerous','B) Call — see a cheap flop with a strong hand','C) 3-bet shove — 30BB puts KQo in shove territory from SB','D) 3-bet small to 8BB'],a:'C',e:'At 30BB KQo is a 3-bet shove from SB vs BTN open. Strong enough to shove, generates fold equity, and at 30BB you do not want to play KQo OOP in a 3-bet pot.'},
+{c:'3-Bet',q:'What makes a good resteal candidate?',o:['A) Any strong hand','B) A hand that has fold equity against the opener, decent equity when called, and ideally blockers to the calling range','C) Only premium pairs and AK','D) Any two cards from the blinds'],a:'B',e:'Good resteals have three components: fold equity (opener has wide range), equity when called (at least 35-40%), and blockers to premium hands. A5s, KTs, 77 are classic resteal hands.'},
+{c:'3-Bet',q:'At 25BB CO opens, you are BTN with 99. Action?',o:['A) Fold — 99 is too vulnerable to play a 3-bet pot','B) Call — implied odds with a pair','C) 3-bet shove — 25BB with 99 is a clear shove','D) 3-bet small to 6BB'],a:'C',e:'At 25BB 99 is a 3-bet shove from BTN vs CO. Strong enough to be ahead of CO opening range often, enough fold equity, and great equity when called.'},
+{c:'3-Bet',q:'You 3-bet with KK. Opponent calls. Flop is A65 rainbow. Action?',o:['A) Check-fold — they have an ace','B) C-bet — your range includes AK, AQ so you still have range advantage','C) Check-call any bet','D) Bet large to represent the ace'],a:'B',e:'With KK on A65r after 3-betting, you still c-bet. Your 3-bet range includes AK, AQ so your range connects well. KK itself can bluff-catch or fold depending on action.'},
+{c:'3-Bet',q:'BTN opens, SB cold-calls, you are BB. When do you squeeze?',o:['A) Only with premium hands','B) Never — too many players in the pot','C) With strong hands and some suited ace bluffs — both players have capped ranges and you have maximum fold equity','D) Only if both players are tight'],a:'C',e:'BB squeeze is powerful here. BTN has opened wide, SB has flatted and capped their range (no 3-bet), and your 3-bet has great fold equity. Use strong hands plus A3s-A5s.'},
+{c:'3-Bet',q:'What is the optimal 3-bet size from OOP?',o:['A) 3x the open','B) 3.5-4x the open — larger OOP to compensate for positional disadvantage','C) Same as in position — sizing does not change','D) Pot-sized always'],a:'B',e:'OOP 3-bets should be larger (3.5-4x) to build a bigger pot when you have the advantage preflop and to put more pressure on the opener\'s range.'},
+{c:'3-Bet',q:'At 40BB you 3-bet and get called. What stack-to-pot ratio (SPR) should you expect postflop?',o:['A) About 10 — deep and difficult to get all-in','B) About 3-4 — relatively low, committed with most strong hands','C) About 1 — near-shoving on every flop','D) SPR does not matter in tournaments'],a:'B',e:'After a 3-bet pot at 40BB the SPR is typically 3-4. This means you are committed with top pair or better and the stacks go in naturally on the flop or turn.'},
+{c:'3-Bet',q:'You 3-bet from HJ, CO calls. SPR is 3. Flop is KT4 rainbow. You have QQ. Action?',o:['A) Check — scared of the king','B) C-bet all-in immediately','C) C-bet for about 40% pot to build into natural all-in','D) Give up — QQ on K-high is too dangerous'],a:'C',e:'QQ on KT4 with SPR 3 is a strong hand. Bet to build pot naturally toward all-in. You beat most of CO calling range and are not far behind even against Kx.'},
+{c:'3-Bet',q:'What is a light 3-bet?',o:['A) A 3-bet with a medium strength hand that does not want to be called','B) A 3-bet with a very small sizing','C) A 3-bet from the blinds only','D) A 3-bet with a suited connector'],a:'A',e:'A light 3-bet uses hands like KJo, AT that have decent equity but prefer folds. The goal is to pick up the open raise. If called, these hands play okay but not great.'},
+{c:'3-Bet',q:'CO opens, BTN 3-bets, SB 4-bets. You are in BB with KK. Action?',o:['A) Call — KK plays well heads-up','B) 5-bet shove — KK is strong enough to 5-bet against a 4-bet','C) Fold — you might be up against AA','D) Call and fold to any flop bet'],a:'B',e:'KK is a 5-bet shove here. The 4-bet range is AA, KK, QQ, AK — you are crushing QQ and AK and a small dog to AA. With pot odds in a 5-bet pot, 5-bet shove is correct.'},
+{c:'3-Bet',q:'At 50BB, UTG opens, CO 3-bets. You are in BB with TT. Call or fold?',o:['A) Always fold — TT is never strong enough here','B) Call — TT has great set-mining equity and you are getting odds','C) 4-bet shove — strong enough to go to war','D) Fold — cold-calling OOP into two strong ranges is a losing play'],a:'D',e:'This is a cold-call spot, not a direct 3-bet response. BB is OOP against two strong ranges: UTG tight opener and CO 3-bet range. Implied odds are terrible in 3-bet pots (stacks are too shallow to win a big enough pot when you set-mine). Fold is correct. 4-bet shoving 50BB into two players who both likely have strong hands is also bad. Fold and wait for a better spot.'},
+{c:'3-Bet',q:'You 3-bet from SB, BTN calls. Flop is 964 two-tone. You have AK with backdoor nut flush. C-bet?',o:['A) Check — you missed the board completely','B) C-bet — AK with backdoor nut flush is an excellent barrel hand in a 3-bet pot','C) Check-fold','D) Always check out of position'],a:'B',e:'AK with backdoor nut flush is a strong barrel hand. You have overcards (6 outs), backdoor nut flush (2-3% extra equity per card), and good fold equity in a 3-bet pot.'},
+{c:'3-Bet',q:'Opponent 3-bets you. You have AQo. At what stack depth should you 4-bet vs call?',o:['A) Always 4-bet AQo — it is too strong to flat','B) 4-bet shove at 20-30BB, flat or fold at deeper stacks','C) Always call — AQo does not want to be re-raised','D) Always fold AQo to a 3-bet'],a:'B',e:'At 20-30BB AQo 4-bet shoves for fold equity plus it is often ahead of 3-bet range. Deep (50BB+) you can flat in position or fold OOP depending on your opponent tendencies.'},
+{c:'3-Bet',q:'When does a squeeze become a resteal?',o:['A) They are the same thing','B) Resteal is specifically from the blinds over a late-position open; squeeze is over an open plus one or more cold-callers','C) Resteal is a larger size than a squeeze','D) Resteals only happen with short stacks'],a:'B',e:'Resteal: blinds shoving over a late-position open. Squeeze: 3-betting over an open after one or more players have called (no need to be from the blinds).'},
+{c:'3-Bet',q:'At 35BB you 3-bet and opponent calls. What hands should you c-bet with on a T83 board?',o:['A) Only your strong made hands','B) Polarized range — your premium hands and your draws/semi-bluffs, check medium hands','C) Your entire range — you are the 3-bettor','D) Only check-raise on this board'],a:'B',e:'In 3-bet pots use a polarized strategy. Bet your strongest hands and draws. Check with medium-strength hands like JJ, QQ on T-high boards to protect your checking range.'},
+{c:'3-Bet',q:'A5s vs A9s for a resteal from the SB. Which is better and why?',o:['A) A9s is better — higher equity when called','B) A5s is better — blocks AK/AA while the wheel combo adds extra equity vs tight ranges','C) They are equivalent — same suit, close in rank','D) Neither is good for restealing'],a:'B',e:'A5s is the better resteal hand. The 5 does not block many calling hands, A blocks AA and AK, and the wheel possibility (A2345) adds extra equity when called by broadways.'},
+{c:'3-Bet',q:'You 3-bet from BTN vs CO. Action folds to CO who shoves for 40BB. You have QQ. Call or fold?',o:['A) Always fold — QQ might be crushed','B) Call — QQ has about 55-60% equity vs CO 4-bet shove range which includes AK and some bluffs','C) Fold — you need to be ahead more than 60% to call','D) Call only if CO is aggressive'],a:'B',e:'QQ vs a 40BB shove from CO is a call. CO 4-bet range includes AA, KK, AK, and some bluffs. QQ has approximately 55-60% equity — a profitable call with the pot odds.'},
+{c:'3-Bet',q:'What is the correct 3-bet size from in position?',o:['A) 3x the open','B) 2.5x — keep it small to control pot','C) 3x is standard in position — enough to pressure, not too large to scare away calls','D) Pot-sized always — maximize fold equity'],a:'C',e:'3x the open is standard IP 3-bet size. Large enough to pressure the opener\'s range and build a pot, small enough to get called by hands you dominate.'},
+{c:'3-Bet',q:'Multiway pot after a squeeze. You have AK and the board is K62 rainbow. What is your bet frequency?',o:['A) 100% — top pair top kicker, always bet','B) Lower than heads-up — maybe 50-60%, multiway requires stronger hands to bet','C) 0% — never bet TPGK multiway','D) Same as heads-up — board texture drives frequency'],a:'B',e:'In multiway pots you need stronger hands to bet profitably. AK on K62 is strong but in a 3-way pot someone might have K6, K2, or 66. Bet but not at 100% frequency.'},
+{c:'3-Bet',q:'HJ opens 2x, CO 3-bets to 6BB, you are BTN with TT at 50BB. Best action?',o:['A) Call — TT in position is strong enough to cold-call a 3-bet','B) 4-bet shove — isolate vs CO and eliminate multiway risk','C) Fold — TT is not strong enough in this spot','D) Call and fold to any c-bet on an A/K/Q flop'],a:'B',e:'This is a cold-call situation — you have not put a chip in yet. Flatting creates a three-way pot (HJ still lives), lets the blinds squeeze, and puts TT OOP against two strong ranges postflop. 4-bet shoving eliminates the multiway problem, generates fold equity vs CO 3-bet range, and gets the money in as a ~45-50% equity favorite vs their continuing range. Fold is also reasonable. Cold-calling is the worst option.'},
+{c:'3-Bet',q:'What makes cold-calling a 3-bet different from calling a direct 3-bet of your own open?',o:['A) Nothing — same decision either way','B) Cold-calling is worse: you are OOP vs two strong ranges, no dead money advantage, and blinds can squeeze behind','C) Cold-calling is better — you have more information about both ranges','D) Only position matters, not how the pot was opened'],a:'B',e:'When you opened and face a 3-bet, at least you have a positional advantage from late position and the 3-bettor must play vs your range. Cold-calling means you enter a pot where two players already have defined strong ranges, you are often OOP, and you have no fold equity from prior action. GTO Wizard research shows cold-calling is the least frequent action — lean toward 4-bet or fold in cold-call spots.'},
+/* ── BLIND VS BLIND (20) ── */
+{c:'BvB',q:'SB with T9o at 30BB, folded to you. Raise or complete?',o:['A) Complete — T9o is too speculative to raise OOP','B) Raise — T9o is in SB raising range at 30BB','C) Fold — T9o is dominated too often','D) Always complete suited, fold offsuit'],a:'B',e:'T9o is a standard SB raise at 30BB. Connected broadway-adjacent hands with decent equity raise for fold equity against the BB. Completing often lets BB realize equity too cheaply.'},
+{c:'BvB',q:'BB with K7o, SB raises 3x. Call or fold?',o:['A) Fold — K7o is too weak to defend','B) Call — getting 2:1 odds with K7o which has decent equity and you close the action','C) 3-bet — K7o is a strong BB defense hand','D) Only call if SB is aggressive'],a:'B',e:'K7o in BB vs SB raise is a call at most depths. You are getting great pot odds, your hand has reasonable equity, and you close the action in position for the rest of the hand.'},
+{c:'BvB',q:'SB completes with 65s, BB checks. Flop is J52 rainbow. Who has range advantage?',o:['A) SB — they bet preflop','B) BB — they have uncapped range and J-high boards favor BB checking range','C) Neither — pot was checked through','D) Equal range advantage'],a:'B',e:'After a BvB completion, the BB has an uncapped range and J52r is a neutral to BB-favoring board. BB should probe frequently. SB\'s range is weaker having just completed.'},
+{c:'BvB',q:'At 25BB, SB shoves. You are BB with QJo. Call or fold?',o:['A) Always fold — QJo vs SB shove is dominated','B) Call — QJo has about 45-50% equity vs SB push range and you are getting 2:1','C) Fold — wait for a better hand','D) Call only if SB is very loose'],a:'B',e:'QJo vs SB 25BB shove is a call. You are getting 2:1 pot odds and need only 33% equity. QJo has approximately 42-48% equity vs a reasonable SB shoving range.'},
+{c:'BvB',q:'What is the BB squeeze and when is it most effective?',o:['A) BB 3-betting after the SB calls a raise','B) BB 3-betting after BTN opens and SB cold-calls — both players are capped and you have maximum fold equity','C) BB shoving after multiple limpers','D) BB betting large on any flop'],a:'B',e:'BB squeeze is most effective when BTN opens and SB cold-calls. SB cannot have a strong hand (they would have 3-bet), BTN range is wide, and your 3-bet has huge fold equity.'},
+{c:'BvB',q:'SB with A8o at 40BB, folded to you. Raise or complete?',o:['A) Complete — A8o has reverse implied odds OOP','B) Raise — A8o is a clear SB raise at 40BB','C) Fold — A8o is dominated by AJ+','D) Raise only vs tight BBs'],a:'B',e:'A8o is a standard SB raise at 40BB. Strong kicker, reasonable equity, fold equity against the BB. You should be raising about 40% of hands from SB.'},
+{c:'BvB',q:'BB defends with 54s vs SB raise. Flop is A93 rainbow. Action?',o:['A) Donk bet — you have position leverage','B) Check — you missed completely, check-fold to a c-bet','C) Check and evaluate — 54s has backdoor equity and can peel once','D) Bluff-raise the flop'],a:'C',e:'54s has backdoor straight equity (3-4-5-6 possibilities) on A93r. Check and call a small to medium c-bet once. You can fold to large bets or double barrels.'},
+{c:'BvB',q:'At 20BB in the BB with ATo, SB shoves. Call or fold?',o:['A) Fold — ATo is dominated by AJ+','B) Call — ATo is a clear call vs SB 20BB shove','C) It depends entirely on SB tendency','D) Only call if SB is extremely loose'],a:'B',e:'ATo is a comfortable call vs SB 20BB shove. SB shove range at 20BB is wide (40%+). ATo has excellent equity vs that range and you are getting 2:1 on your call.'},
+{c:'BvB',q:'What hands should BB 3-bet vs SB raise?',o:['A) Only AA, KK, QQ, AK — premium hands only','B) Premium value hands plus suited ace bluffs A3s-A5s for balance','C) Any two cards — you are getting good odds','D) Only suited hands'],a:'B',e:'BB should 3-bet value hands (QQ+, AK) plus bluffs with blockers (A3s-A5s). The bluffs have blocker equity plus nut potential. A balanced range prevents SB from exploiting your tendencies.'},
+{c:'BvB',q:'SB with KJo at 15BB, BB is unknown. Raise or shove?',o:['A) Raise to 2.5BB','B) Shove — 15BB puts KJo in shove territory from SB','C) Complete — KJo plays better postflop','D) Fold — KJo gets dominated too often'],a:'B',e:'At 15BB KJo shoves from SB. Strong broadway hand, fold equity vs BB, decent equity when called. Completing and navigating postflop OOP at 15BB is much worse.'},
+{c:'BvB',q:'Flop is 752 rainbow, BB checked. SB c-bets 30% pot. BB action with K8o?',o:['A) Fold — K8o has no pair and no draws','B) Call — K8o has overcards and backdoor possibilities, small bet gives good odds','C) Raise — pressure the small c-bet','D) Always fold K-high to any c-bet'],a:'B',e:'K8o vs a small c-bet on 752r has reasonable pot odds. Two overcards (K and 8) have about 25-30% equity vs SB\'s range. The small bet makes this a viable call.'},
+{c:'BvB',q:'BB with 22 vs SB raise at 50BB. What is the primary strategy?',o:['A) Fold — 22 plays poorly OOP','B) Call and set-mine — 50BB gives implied odds to flop a set and win a big pot','C) 3-bet bluff — 22 has good blocker properties','D) Only call if SB raise is small'],a:'B',e:'At 50BB 22 in BB vs SB is a call for set-mining value. You need about 10-15x implied odds and at 50BB vs a likely-to-stack-off opponent you have enough.'},
+{c:'BvB',q:'SB at 35BB with Q4s. Raise or fold?',o:['A) Fold — Q4s is too speculative','B) Raise — Q4s is in SB opening range at 35BB','C) Complete only','D) Open only if BB is tight'],a:'B',e:'Q4s suited is in SB opening range at 35BB. Suited cards have extra value, you have fold equity against one player, and at 35BB you can navigate postflop.'},
+{c:'BvB',q:'After SB completes, BB checks. What should BB\'s strategy be on K-high boards?',o:['A) Always check — SB will bet first','B) Probe frequently — BB has uncapped range and SB is weak for not raising','C) Give up all weak hands','D) Only bet with Kx or better'],a:'B',e:'BB should probe on K-high boards after a BvB completion. SB\'s range is weak (they did not raise), BB\'s range is uncapped. Probe bets with medium holdings and draws are effective.'},
+{c:'BvB',q:'At 22BB with J9s in BB, SB shoves. Call or fold?',o:['A) Fold — J9s is too speculative vs a shove','B) Call — J9s has about 40-42% equity vs SB 22BB shove range and you are getting 2:1','C) Always fold non-pairs to shoves','D) Only call if you have a read'],a:'B',e:'J9s vs SB 22BB shove: you need 33% equity and you have about 40-42% vs a wide SB shove range. Pot odds make this a call. Suited connectors play well vs wide ranges.'},
+{c:'BvB',q:'SB raises 3x at 30BB. BB has 97s. Call or fold?',o:['A) Fold — 97s OOP is too speculative','B) Call — suited connector with implied odds, getting good pot odds','C) 3-bet — 97s is a good bluff candidate','D) Call only vs wide SB ranges'],a:'B',e:'97s in BB vs SB raise is a standard call. You are getting pot odds, have implied odds for straights and flushes, and 97s has enough equity to be a profitable defend.'},
+{c:'BvB',q:'What is the main mistake players make in BB defense?',o:['A) Defending too wide','B) 3-betting too often','C) Defending too tight — folding hands that have enough pot odds to call profitably','D) Never check-raising'],a:'C',e:'Most players fold too much from BB. The pot odds you receive when defending BB (2:1 or better) mean many hands are profitable defends even OOP. Study your defense frequency and widen.'},
+{c:'BvB',q:'SB with A2o at 20BB, folded to you. Shove or fold?',o:['A) Fold — A2o is too weak','B) Shove — A2o has strong blockers and fold equity vs the BB at 20BB','C) Complete — A2o plays better postflop','D) Open to 2x'],a:'B',e:'At 20BB A2o shoves from SB. Blocks AA and AK (reducing calling combos), has decent equity when called, and generates fold equity. A2o is in the SB shove range here.'},
+{c:'BvB',q:'Heads-up (SB vs BB) — how wide should the SB open?',o:['A) Same as 6-handed BTN — about 45-50%','B) Very wide — 75-85% of hands HU, folding 2-high type hands','C) Tight — more players fold, HU is more variance','D) Only open premium hands and steal with shoves'],a:'B',e:'Heads-up the SB should open 75-85% of hands. With only one opponent you have maximum fold equity and any reasonable hand has playable equity. Folding 52o type hands is standard.'},
+{c:'BvB',q:'BB with QQ, SB shoves 25BB. Call or fold?',o:['A) Fold — QQ might be up against KK or AA','B) Call — QQ has about 70-75% equity vs SB 25BB shove range','C) It depends only on SB tendencies','D) Only call if SB is known to be loose'],a:'B',e:'QQ is a comfortable call vs SB 25BB shove. SB shoves wide (50%+) at this depth, meaning QQ has approximately 70-75% equity vs their range. Easy profitable call.'},
+/* ── ICM AND TOURNAMENT PLAY (25) ── */
+{c:'ICM',q:'Definition: what is ICM in tournament poker?',o:['A) A method for calculating pot odds','B) Independent Chip Model — converts chip stacks to real dollar equity using the payout structure','C) International Card Method — a card-ranking system','D) A type of bluff strategy near the bubble'],a:'B',e:'ICM converts chips into their real-money equivalent based on everyone\'s stack sizes and the remaining prize pool distribution. A chip is not worth a fixed amount — it changes with stack size.'},
+{c:'ICM',q:'What is the key ICM principle about chip value?',o:['A) Chips become more valuable as you accumulate more','B) Chips are worth more when you have fewer — marginal chips are worth less the more you have','C) All chips have equal value at all times','D) Chips only have ICM value on the final table'],a:'B',e:'Chips have diminishing value as you accumulate them. Your first chip is worth the most; your last chip addition is worth the least. This is why ICM says to protect your stack near payout jumps.'},
+{c:'ICM',q:'You are on the money bubble with medium stack. BB vs UTG shove. You have ATo. Pure ChipEV says call. ICM says?',o:['A) ICM says the same as ChipEV','B) ICM often says fold — the risk of busting outweighs the chip gain when a min-cash is valuable','C) ICM always says call with ATo','D) ICM only applies at the final table'],a:'B',e:'On the bubble ICM heavily penalizes elimination. A min-cash has real value. ATo vs UTG is often a fold ICM-adjusted even if ChipEV is breakeven, because the ICM cost of busting is too high.'},
+{c:'ICM',q:'Final table bubble with 9 players. 8 get paid. You have average stack. Short stack is in BB. UTG shoves. You have KK. Call or fold?',o:['A) Always call — KK is too strong to fold','B) Fold — ICM says protect your stack when a payout jump is imminent','C) Call — KK equity overcomes ICM pressure','D) It depends on exact stack sizes and payout structure'],a:'D',e:'This is a genuine ICM dilemma. KK is strong but stack sizes matter — if the short stack is about to bust you might fold. Run the ICM math. KK is usually a call but the situation determines it.'},
+{c:'ICM',q:'What is the "bubble factor"?',o:['A) How tight you should be on the bubble','B) The ratio of ICM value gained to ChipEV — how much ICM adjusts your decisions','C) The number of players left to bust before the money','D) The percentage of hands you should play at the bubble'],a:'B',e:'The bubble factor quantifies how much ICM adjusts decisions. A bubble factor of 2 means you need to win 2x as often as ChipEV breakeven to make a call profitable ICM-wise.'},
+{c:'ICM',q:'You have a huge chip lead at the final table. How does ICM affect your strategy vs short stacks?',o:['A) Chip leader ignores ICM — they can absorb any loss','B) Chip leader should exploit ICM — shove wide vs short stacks who are protecting payout equity','C) Chip leader should play tighter to protect the lead','D) ICM does not apply to the chip leader'],a:'B',e:'As chip leader you can exploit ICM by shoving wide. Short stacks are highly ICM-constrained and must fold many profitable ChipEV calls. The leader benefits from this asymmetry.'},
+{c:'ICM',q:'Two players have equal chips. One is near the bubble, one is deep in the money. Who has more ICM pressure?',o:['A) The player near the bubble — each bust-out has larger payout consequences','B) The player deep in the money','C) Equal ICM pressure at equal stack sizes','D) The player with the more experienced opponents'],a:'A',e:'ICM pressure is highest near payout jumps. Near the bubble each spot eliminated has huge value. Deep in the money (final few) the jumps between spots are smaller relative to already secured value.'},
+{c:'ICM',q:'Monster Stack event, 500 players left, 300 get paid. You have 30BB. UTG shoves 20BB. You have 99. Action?',o:['A) Fold — ICM is severe near the bubble','B) Call — you are far enough from the bubble that ChipEV dominates, 99 is ahead of shove range','C) Always fold pairs under QQ near the bubble','D) The number of players remaining does not matter'],a:'B',e:'500 players with 300 paid means you are relatively far from the bubble. ICM pressure exists but is not severe. 99 is ahead of a UTG 20BB shove range — call ChipEV.'},
+{c:'ICM',q:'Push/fold ICM situation: you have 12BB on the FT bubble. AJs from UTG. Action?',o:['A) Fold — ICM says protect stack on FT bubble','B) Shove — AJs is strong enough to shove despite ICM pressure','C) Open to 2.5BB','D) Depends on whether antes are running'],a:'B',e:'AJs from UTG at 12BB on FT bubble is a shove despite ICM. The hand is too strong and your stack is too short to wait. Shoving AJs generates fold equity and has excellent equity when called.'},
+{c:'ICM',q:'What is the Nash equilibrium in push/fold poker?',o:['A) A strategy where both players are shoving the same hands','B) A push/fold strategy where no player can improve their EV by changing strategy given that all others play optimally','C) Playing perfectly balanced ranges','D) Always shoving with 10BB or less'],a:'B',e:'Nash equilibrium in push/fold is the unexploitable strategy. Given optimal calling ranges, these are the exact hands you should shove. In practice you adjust for actual caller tendencies.'},
+{c:'ICM',q:'You have 40BB at a final table. Chip leader covers you. How does this change your strategy?',o:['A) No change — ignore the chip leader','B) Play tighter, especially against the chip leader. Being covered means busting costs you maximum ICM equity.','C) Play looser to accumulate chips quickly','D) Shove every hand the chip leader is not in'],a:'B',e:'Being covered by the chip leader is the worst ICM position. Any confrontation risks elimination vs maximum EV gain. Avoid marginal spots against the chip leader and exploit shorter stacks instead.'},
+{c:'ICM',q:'Colossus tournament pays 2000 places out of 20000. You have 25BB with 3000 players left. How much ICM pressure?',o:['A) Extreme — act as if on the bubble','B) Low-moderate — still far from the money, play mostly ChipEV','C) Maximum — always fold to preserve stack','D) No ICM pressure this far from the money'],a:'B',e:'With 3000 of 20000 left and 2000 paying, you are at about 50% of the field. ICM pressure exists but is not severe. Play ChipEV-dominant strategy with mild ICM adjustments.'},
+{c:'ICM',q:'What is a "deal" in tournament poker and when should you consider one?',o:['A) A side bet between players at the table','B) An agreement to distribute remaining prize money based on ICM or chip-count equity when few players remain','C) A chop of the blinds','D) A deal should never be made'],a:'B',e:'A deal redistributes remaining prize money. Consider one when the risk-adjusted value of a deal exceeds the EV of continuing. ICM value + your skill edge vs opponents determines whether to make a deal.'},
+{c:'ICM',q:'With 3 players remaining, you have the short stack. Correct strategy?',o:['A) Fold everything — preserve your stack','B) Pick spots to shove from the BTN/SB where ICM pressure on opponents is highest','C) Play normal poker as if it were a cash game','D) Shove every hand to accumulate chips quickly'],a:'B',e:'With 3 remaining you exploit the ICM pressure on the medium stack. BTN and SB shoves are powerful when the medium stack cannot call wide — they risk busting to 3rd rather than 2nd.'},
+{c:'ICM',q:'Payout structure: 1st $50K, 2nd $30K, 3rd $15K. Heads-up. You have 40% of chips vs opponent 60%. What is your ICM equity?',o:['A) $32K — proportional to chip count','B) Between $30K and $50K, closer to $38-40K ICM-adjusted','C) Exactly $30K since you would get second place','D) $40K exactly'],a:'B',e:'With 40% of chips HU you are likely to win 40% of the time and lose 60%. ICM: 0.4 x $50K + 0.6 x $30K = $20K + $18K = $38K ICM equity. Better than the $30K payout for 2nd.'},
+{c:'ICM',q:'Freezeout event. Near the bubble. You have a dominant chip lead. Short stack is all-in vs another player. Action?',o:['A) Root for the short stack to bust — it is almost never correct to interfere','B) Try to eliminate both players yourself','C) No action required — sit out and let ICM sort itself out','D) Donate chips to medium stack to make them comfortable'],a:'A',e:'When two other players are involved in a hand that could eliminate the short stack, do nothing. Let it play out. If the short stack busts, everyone moves up in the payout structure and your ICM position improves.'},
+{c:'ICM',q:'PKO (Progressive Knockout Bounty) tournament. Does ICM change vs regular MTT?',o:['A) No — ICM is the same regardless of format','B) Yes — bounties add extra EV to eliminations, shifting strategy toward calling wider vs short stacks','C) PKO tournaments have no ICM pressure','D) PKO ICM is simpler than regular MTT'],a:'B',e:'In PKO formats bounties add EV to eliminations. This shifts strategy toward calling shoves wider — you gain chips plus a bounty. ICM pressure still exists from the regular payout but bounties partially offset it.'},
+{c:'ICM',q:'Final table. A deal is proposed. ICM give you $45K equity. Chip-count gives you $52K. Should you take the deal?',o:['A) Yes — guaranteed money is always better','B) Consider your edge vs remaining opponents — if you have a significant skill edge, declining might be correct','C) No — always play for the win','D) It depends only on payout structure'],a:'B',e:'ICM equity is not the only factor. If you have a skill edge vs remaining opponents, your EV might exceed ICM equity. Against tough opponents in a skill-driven format, deals often make sense.'},
+{c:'ICM',q:'You are 3 spots from the money with 22BB. Under-the-gun shove or wait?',o:['A) Never shove 3 from the money — preserve stack','B) Continue to shove strong hands — tighten marginally but do not lock up','C) Fold everything until in the money','D) Shove every hand to accumulate chips for the money'],a:'B',e:'3 spots from money you tighten slightly from pure ChipEV but do not lock up. Continue shoving strong hands. Paralysis near the bubble costs more in missed steals than it saves in bust-out avoidance.'},
+{c:'ICM',q:'Super Turbo format. How does ICM pressure compare to regular MTT?',o:['A) Same ICM pressure as regular MTT','B) Less ICM pressure per hand — turbo structures mean shorter play and chips matter more for survival','C) More ICM pressure — turbo formats have bigger swings','D) ICM is less relevant in turbo formats'],a:'B',e:'Super Turbo formats are more ChipEV-dominant than regular MTTs because the payout structure compresses faster. You have less time to navigate ICM spots and chip accumulation matters more.'},
+{c:'ICM',q:'Final 2 tables of WSOP Freezeout. Payout jumps are about $2K per spot. How should you adjust?',o:['A) Extreme ICM adjustments — fold everything borderline','B) Mild adjustments — $2K jumps justify small tightening in marginal spots','C) No adjustments — too far from final table for ICM to matter','D) The dollar amount alone determines ICM adjustments'],a:'B',e:'$2K per spot is real money but not earth-shattering in a Freezeout context. Make mild ICM adjustments — tighten slightly in very close marginal spots, play near-ChipEV otherwise.'},
+{c:'ICM',q:'With 10BB remaining at a final table, you are the short stack. Strategy?',o:['A) Play super tight and wait for aces','B) Pick your shove spot soon — waiting costs you fold equity and antes drain your stack','C) Call any shove with any two cards','D) Shove only from BTN and SB'],a:'B',e:'At 10BB you need to shove soon. Every orbit you lose antes and fold equity decreases. Pick a reasonable shove hand from position and go. Waiting for aces at 10BB is a significant mistake.'},
+{c:'ICM',q:'What percentage equity do you need for a profitable bubble call with high ICM pressure?',o:['A) The same as ChipEV — >33% for 2:1 pot odds','B) Significantly more than ChipEV — sometimes 60-70% depending on ICM bubble factor','C) 50% always','D) It only depends on pot odds not ICM'],a:'B',e:'With high ICM pressure the bubble factor can require 60-70% equity to make a call profitable. The cost of elimination is so high that normally profitable ChipEV calls become folds.'},
+/* ── OVERSIZED OPENS AND ADJUSTMENTS (15) ── */
+{c:'Oversize',q:'Villain opens 5x in early position. What does this typically signal?',o:['A) A weak hand trying to steal','B) Often a strong but vulnerable hand or a recreational player uncomfortable with standard sizing','C) Always pocket aces or kings','D) A mis-click or error'],a:'B',e:'5x opens often indicate strength (recreational players who are excited about their hand) or vulnerability (wanting to reduce multi-way action). Widen your respect for their range.'},
+{c:'Oversize',q:'Optimal response to a 4x BTN open when you are in BB with AKs?',o:['A) Fold — AKs is dominated at 4x','B) Call — implied odds are too good to fold','C) 3-bet for about 12-14x — scale your 3-bet proportionally','D) Shove immediately at any stack depth'],a:'C',e:'Versus a 4x open you scale your 3-bet proportionally. AKs is a clear 3-bet — size to about 3-3.5x the open (12-14BB) to maintain the same pot-odds pressure as a standard 3-bet.'},
+{c:'Oversize',q:'Villain open-limps then raises large after you 3-bet. What does this usually mean?',o:['A) A weak hand trying a stop-and-go','B) A monster hand — limp-reraise is nearly always premium','C) A drawing hand','D) Nothing — all player types do this equally'],a:'B',e:'Limp-reraise is one of the strongest lines possible. Recreational players especially use this line with AA and KK. Treat it as premium range (AA, KK, sometimes QQ or AK suited).'},
+{c:'Oversize',q:'You open to 3BB and villain 3-bets to 15BB. How does your flatting range change?',o:['A) No change — flat the same hands as you would vs any 3-bet','B) Flat a narrower range — the larger sizing shrinks implied odds and forces tighter calling','C) Flat wider — punish the large sizing','D) Always 4-bet vs large 3-bets'],a:'B',e:'A larger 3-bet sizing reduces implied odds and increases pot commitment. Flat a narrower range of hands that have strong equity (not just implied odds hands). Fold more marginal flats.'},
+{c:'Oversize',q:'At a WSOP table, a recreational player opens 6x every hand. What is your adjustment?',o:['A) Play tighter — 6x opens are scary','B) Value-bet wider — recreational players opening large often call off with weak hands','C) 3-bet every hand to exploit the sizing','D) Only play premium hands in position'],a:'B',e:'Recreational players who open large are often calling stations. Widen your value 3-bet range since they will call with dominated hands. Reduce bluffs since they call too much.'},
+{c:'Oversize',q:'BTN opens 3x. You 3-bet SB to 10x. BTN calls. How does the 3x open affect your postflop strategy?',o:['A) No difference — treat it as any 3-bet pot','B) The SPR is slightly lower than a standard 3-bet pot, adjust commitment thresholds accordingly','C) Always c-bet large since the pot is bigger','D) Check more often since the pot is big'],a:'B',e:'With a 3x open the pot is larger preflop, reducing SPR postflop. Commitment thresholds are reached faster — top pair plays more like a set in a standard pot. Adjust aggression accordingly.'},
+{c:'Oversize',q:'Villain makes an oversized check-raise on the flop (5x your bet). What range does this represent?',o:['A) Mostly bluffs — strong hands slowplay','B) Almost always a very strong hand — sets, two pairs, combo draws at minimum','C) A balanced range of bluffs and value','D) Always a draw trying to deny equity'],a:'B',e:'Oversized check-raises (5x+) represent the strongest part of a player\'s range — sets, two pairs, nutted draws. Recreational players almost never do this as a bluff. Fold all but your strongest hands.'},
+{c:'Oversize',q:'Optimal 3-bet size vs a 2.5x open, in position?',o:['A) 7.5BB — 3x the open','B) 6-7BB — slightly under 3x is fine in position','C) 10BB — larger to get more value','D) Always size to exactly 3x'],a:'A',e:'3x the open is standard in position. Vs 2.5x open that is 7.5BB. This applies correct pressure, builds a pot with your value hands, and offers you calls from dominated hands.'},
+{c:'Oversize',q:'Villain min-raises (2x) every hand. What adjustment does this warrant?',o:['A) 3-bet wider — min-raises deserve less respect','B) Flat wider in position — excellent implied odds','C) Both A and B — min-raises allow you to see flops cheap and also 3-bet light','D) No adjustment needed'],a:'C',e:'Min-raises give you excellent pot odds to flat in position and 3-bets only need to be 5-6BB. Both flatting and 3-betting wider are profitable. Exploit the cheap price to enter pots.'},
+{c:'Oversize',q:'You raise to 3BB, villain shoves for 45BB. Effective stack is 45BB. You have TT. Action?',o:['A) Always fold — shoves face down equity','B) Call — TT has about 55% equity vs a 45BB shove range and you are committed in the hand','C) Fold — 45BB is too deep to call off','D) Depends only on villain read'],a:'B',e:'TT vs a 45BB shove has approximately 55-60% equity vs a range that includes QQ-22, AK, AQs, and some bluffs. With the dead money in the pot this is a profitable call.'},
+{c:'Oversize',q:'Opponent always bets 80-90% pot regardless of hand strength. How do you exploit?',o:['A) Fold more — large bets usually mean strong hands','B) Call or raise more freely — large sizing regardless of strength means their bluffs are expensive mistakes you can profitably call','C) Also bet large yourself','D) Move to a different table'],a:'B',e:'Players who always use large sizing have no sizing tells. However, their bluffs are very expensive. You can call more profitably because their bluffing frequency is constrained by the large size.'},
+{c:'Oversize',q:'How should your 4-bet sizing change when responding to a large 3-bet (12BB vs standard 9BB)?',o:['A) Same 4-bet size — about 24-26BB always','B) Scale up proportionally — about 28-32BB vs a 12BB 3-bet','C) Always 4-bet shove regardless of 3-bet size','D) 4-bet smaller to represent a stronger hand'],a:'B',e:'Scale 4-bets proportionally to 3-bet size. Vs 12BB 3-bet, 4-bet to about 2.5-3x (28-36BB). This maintains the same fold equity and pot-odds pressure as a standard 4-bet would.'},
+{c:'Oversize',q:'In a live WSOP field, recreational players often limp in early position. What is your adjustment?',o:['A) Limp behind — see cheap flops','B) Raise larger to isolate — 4-5x to price out other limpers','C) Only play premium hands in EP','D) Check raises with strong hands only'],a:'B',e:'Versus limpers in live poker, raise larger (4-5x or more) to isolate and reduce multiway action. Taking control of the pot with a wide range vs a recreational limper is profitable.'},
+{c:'Oversize',q:'Your standard open is 2.5BB. You open with QQ but make it 4BB accidentally. What do you do?',o:['A) Take it back — you misclicked','B) In a live game, incorrect sizing is binding — play QQ in a 4BB raised pot','C) Announce the error and rebid','D) Fold since your hand is now readable'],a:'B',e:'In live poker your announced bet or placed chips are binding. A 4BB open with QQ is standard play. Now just play the hand normally — the sizing is not obviously polarizing.'},
+{c:'Oversize',q:'Villain bets 3x pot on the river. You have a medium-strength bluff catcher (middle pair). Call or fold?',o:['A) Always call — villain is always bluffing with huge bets','B) Consider villain tendencies — 3x pot polarizes their range. If they bluff this sizing, call. If they only value-bet this sizing, fold.','C) Always fold — 3x pot is always value','D) The sizing alone determines the decision'],a:'B',e:'3x pot bets are highly polarizing. Against a player who bluffs this sizing, call profitably. Against a value-heavy player who only bets large for value, fold. Player tendencies determine the answer.'}
+];
+
+/* ── Range sets ── */
+var OPEN40=new Set('AA KK QQ JJ TT 99 88 77 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s AKo AQo AJo ATo KQo KJo'.split(' '));
+var PREM=new Set('AA KK QQ JJ TT AKs AKo AQs AQo'.split(' '));
+var OPEN30=new Set('AA KK QQ JJ TT 99 88 77 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs QJs JTs AKo AQo AJo ATo KQo KJo'.split(' '));
+var DEAD30=new Set('66 55 44 33 22 T9s 98s 87s 76s 65s 54s 43s K9s QTs Q9s J9s T8s 97s 86s QJo KTo'.split(' '));
+var SHOVE22=new Set('66 55 44 33 22 A9s A8s A7s A6s A5s A4s A3s A2s K9s K8s K7s K6s K5s K4s K3s K2s Q9s Q8s Q7s Q6s Q5s Q4s Q3s Q2s J8s J7s J6s J5s T8s T7s 98s 87s 76s 65s K9o K8o K7o K6o QTo Q9o Q8o JTo J9o J8o T9o T8o A9o A8o A7o A6o A5o A4o A3o A2o'.split(' '));
+var SHOVE15=new Set('55 44 33 22 K4s K3s K2s Q4s Q3s Q2s J5s J4s J3s T6s T5s 96s 95s 85s 84s 75s 74s 64s 53s 52s 42s 32s K5o K4o K3o K2o Q6o Q5o J7o J6o T7o 96o 86o'.split(' '));
+var BLVB=new Set('A2s A3s A4s A5s A6s K2s K3s K4s K5s K6s K7s K8s K9s Q5s Q6s Q7s Q8s Q9s J6s J7s J8s J9s T7s T8s T9s 97s 98s 87s 88 77 66 76s 65s 54s A2o A3o A4o A5o K4o K5o K6o K7o K8o K9o Q6o Q7o Q8o Q9o J7o J8o J9o T7o T8o T9o 97o 98o 87o 76o 65o'.split(' '));
+
+function getZone(hand,depth){
+  var iP=PREM.has(hand);
+  if(depth==='15'){if(OPEN30.has(hand)&&!SHOVE15.has(hand))return 'prem';if(SHOVE22.has(hand)||SHOVE15.has(hand))return 'sh15';return 'fold';}
+  if(depth==='22'){if(iP)return 'prem';if(OPEN30.has(hand)||SHOVE22.has(hand))return 'shove';return 'fold';}
+  if(depth==='30'){if(iP)return 'prem';if(OPEN30.has(hand))return 'open';if(DEAD30.has(hand))return 'dead';if(SHOVE22.has(hand))return 'shove';return 'fold';}
+  if(depth==='blvb'){if(iP)return 'prem';if(OPEN30.has(hand))return 'open';if(BLVB.has(hand))return 'blvb';return 'fold';}
+  if(iP)return 'prem';if(OPEN40.has(hand))return 'open';if(SHOVE22.has(hand))return 'shove';return 'fold';
+}
+function evalH(h){
+  var isPair=h.length===2,suited=h.endsWith('s');
+  var r1=h[0],r2=h[1],v1=RV[r1],v2=RV[r2];
+  return{isPair:isPair,suited:suited,r1:r1,r2:r2,v1:v1,v2:v2,isBW:!isPair&&v1>=10&&v2>=10,isAx:r1==='A',isKx:!isPair&&r1==='K',gap:isPair?0:Math.abs(v1-v2)};
+}
+function getAns(hand,pos,bb){
+  var h=evalH(hand),pw=PW[pos];
+  var isPrem=(h.isPair&&h.v1>=10)||(h.r1==='A'&&h.r2==='K');
+  var isStrong=(h.isPair&&h.v1>=7)||(h.isAx&&h.v2>=11)||(h.isBW&&h.suited);
+  var isMed=(h.isPair&&h.v1>=4)||(h.isAx&&h.suited)||(h.isBW&&h.v2>=10)||(h.isKx&&h.suited&&h.v2>=9);
+  var isSC=h.suited&&!h.isAx&&!h.isKx&&h.gap<=2&&h.v1<=10&&h.v2>=5;
+  var isBvB=(pos==='SB'||pos==='BB');
+  if(bb<=22){var isRaiseCall=(h.isPair&&h.v1>=12)||(h.r1==='A'&&h.r2==='K');var isRaiseFold=bb>=20&&((h.isAx&&h.suited&&h.v2<=5)||(h.isKx&&h.suited&&h.v2>=10)||(!h.isAx&&h.isBW&&h.suited&&h.v2>=11&&pw>=0.26));if(isRaiseCall)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — open 2x and call off any jam. Too strong to fold; shoving folds out hands you dominate.'};if(isRaiseFold)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — open 2x, fold to a jam (raise/fold). Blocker value + minimal risk. At '+bb+'BB open 2x — fold to jam, do not shove directly.'};if(isPrem||isStrong)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove directly.'+(bb>=20?' (Or open 2x and call off — both are fine with this hand.':'')};if(isMed&&pw>=0.26)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove.'+(bb>=20?' Could also open 2x from LP and fold to jam.':'')};if(isBvB&&h.isAx)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove. Any Ax in BvB shoves at this depth.'};if(isBvB&&isMed)return{action:'shove',note:hand+' in BvB at '+bb+'BB — shove. Heads-up ranges are wide.'};if(h.isAx&&!h.suited){if(pw>=0.42)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove. Ax from late position at this depth.'};if(pw>=0.26&&h.v2>=6)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove. A'+h.r2+'o from '+pos+'.'};if(pw>=0.19&&h.v2>=9)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove. Strong offsuit ace from HJ.'};if(h.v2>=10)return{action:'shove',note:hand+' from '+pos+' at '+bb+'BB — shove. ATo+ shoves from any position.'};return{action:'fold',note:hand+' from '+pos+' at '+bb+'BB — fold. Weak offsuit ace from early position, too easily dominated.'};}return{action:'fold',note:hand+' from '+pos+' at '+bb+'BB — fold. Insufficient equity vs calling range.'};}
+  if(bb>=23&&bb<=39){if(isPrem)return{action:'open',note:hand+' is premium - always open.'};if(isStrong)return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - open. Strong enough for the dead zone.'};if(isMed&&(h.isBW||h.isAx||h.isKx))return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - open. Broadway/suited aces in range.'};if(isMed&&h.isPair&&pw>=0.26)return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - open medium pair in position.'};if(pw>=0.42&&isMed)return{action:'open',note:hand+' from late position at '+bb+'BB - open wide.'};if(isBvB&&(isMed||isSC))return{action:'open',note:hand+' in BvB at '+bb+'BB - playable heads-up.'};if(isSC||h.isPair)return{action:'fold',note:hand+' from '+pos+' at '+bb+'BB - dead zone. Too shallow for implied odds, too deep to shove.'};return{action:'fold',note:hand+' from '+pos+' at '+bb+'BB - fold.'};}
+  if(isPrem||isStrong)return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - standard open.'};
+  if(isMed&&pw>=0.15)return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - open.'};
+  if(isSC&&pw>=0.26)return{action:'open',note:hand+' suited connector from '+pos+' at '+bb+'BB - open for implied odds.'};
+  if(h.isPair&&pw>=0.26&&bb>=45)return{action:'open',note:hand+' from '+pos+' at '+bb+'BB - open in position for set-mining.'};
+  return{action:'fold',note:hand+' from '+pos+' at '+bb+'BB - fold.'};
+}
+
+/* ── State ── */
+var xp=0,streak=0,dCor=0,dTot=0;
+var view='home';
+var hand=null,pos=null,bb=null,dRes=null,dAns=null;
+var dMode='rfi',d3VillainPos=null,d3VillainSize=null;
+var fcP=1,fcI=0,fcF=false;
+var qSeen=[],qCur=null,qAns=null,qSel=null,qCatFilter='All';
+var gridD='40',suitI=0,pillarOpen=-1;
+var CAT_COLORS={'Ranges':'#00d4ff','Depth':'#f5c842','Short Stack':'#a855f7','C-Bet':'#ff6699','3-Bet':'#ff2d78','BvB':'#a855f7','ICM':'#00ff88','Oversize':'#fb923c'};
+
+try{xp=parseInt(localStorage.getItem('ft_xp')||'0')||0;streak=parseInt(localStorage.getItem('ft_str')||'0')||0;var _d=JSON.parse(localStorage.getItem('ft_d')||'{"c":0,"t":0}');dCor=_d.c||0;dTot=_d.t||0;}catch(e){}
+
+function save(){try{localStorage.setItem('ft_xp',xp);localStorage.setItem('ft_str',streak);localStorage.setItem('ft_d',JSON.stringify({c:dCor,t:dTot}));}catch(e){}}
+function updHdr(){document.getElementById('xpd').innerHTML='&#9889; '+xp+' XP';document.getElementById('std').innerHTML=(streak>2?'&#128293;':'\u25c6')+' '+streak;}
+function rndHand(){var i=Math.floor(Math.random()*13),j=Math.floor(Math.random()*13);if(i===j)return RANKS[i]+RANKS[i];if(i<j)return RANKS[i]+RANKS[j]+'s';return RANKS[j]+RANKS[i]+'o';}
+
+// ── MTT Scenario modes ──
+
+// Positions that can 3-bet vs your open (villain position depends on hero pos)
+var VILLAIN_POSITIONS_VS={
+  UTG:['HJ','CO','BTN','SB','BB'],
+  HJ:['CO','BTN','SB','BB'],
+  CO:['BTN','SB','BB'],
+  BTN:['SB','BB'],
+  SB:['BB']
+};
+var VILLAIN_3BET_SIZES=[6,7,8,9,10,11,12]; // BB sizing options
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function newDrill(){
+  dRes=null;dAns=null;
+  hand=rndHand();
+  bb=STACKS[Math.floor(Math.random()*STACKS.length)];
+
+  if(dMode==='rfi'){
+    pos=rand(POSITIONS);
+  } else if(dMode==='vs_co'){
+    // Hero is in the blinds or BTN facing a CO open
+    pos=rand(['BTN','SB','BB']);
+  } else if(dMode==='vs_btn'){
+    pos=rand(['SB','BB']);
+  } else if(dMode==='bvb'){
+    pos=rand(['SB','BB']);
+    bb=rand([20,25,30,35,40,50,75]); // BvB is more interesting deeper
+  } else if(dMode==='vs_ep'){
+    pos=rand(['HJ','CO','BTN','SB','BB']);
+  } else if(dMode==='short_stack'){
+    bb=rand([10,12,13,15,16,18,20,22]);
+    pos=rand(POSITIONS);
+  } else if(dMode==='3bet'){
+    // Hero opens from various positions, faces a 3-bet.
+    // Hand must be in hero's actual MTT opening range at this depth.
+    pos=rand(['UTG','HJ','CO','BTN','SB']);
+    bb=rand([25,30,35,40,50,66,100]);
+    // Build the valid opening range for this pos/depth, pick a hand from it
+    var heroOpenSet=getAns('AA',pos,bb).action==='open'?true:false; // warm up
+    // Collect all 169 hand combos that hero would open here
+    var validHands=[];
+    var rks=['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+    for(var ri=0;ri<rks.length;ri++){
+      for(var rj=0;rj<rks.length;rj++){
+        var h2;
+        if(ri===rj) h2=rks[ri]+rks[ri];
+        else if(ri<rj) h2=rks[ri]+rks[rj]+'s';
+        else h2=rks[rj]+rks[ri]+'o';
+        if(getAns(h2,pos,bb).action==='open'||getAns(h2,pos,bb).action==='shove'){
+          validHands.push(h2);
+        }
+      }
+    }
+    // Remove duplicates
+    validHands=validHands.filter(function(v,i,a){return a.indexOf(v)===i;});
+    hand=validHands.length>0?rand(validHands):rndHand();
+    var vPos=rand((VILLAIN_POSITIONS_VS[pos]||['BB']));
+    d3VillainPos=vPos;
+    d3VillainSize=rand(VILLAIN_3BET_SIZES);
+    if(bb<=30) d3VillainSize=Math.min(d3VillainSize, Math.round(bb*0.35));
+  }
+}
+
+
+// ── Facing an open: 3-bet / Call / Fold ──
+// villainPos: the opener's position. heroPos: where hero sits.
+// openWidth: approximate open range width of villain by position
+function getVsOpenAns(hand,heroPos,bb,villainPos){
+  var h=evalH(hand);
+  var isIP=(heroPos==='BTN')||
+           (heroPos==='CO'&&(villainPos==='UTG'||villainPos==='HJ'||villainPos==='UTG+1'))||
+           (heroPos==='HJ'&&(villainPos==='UTG'||villainPos==='UTG+1'));
+  var isOOP=(heroPos==='SB'||heroPos==='BB');
+  var isBB=(heroPos==='BB');
+  var isSB=(heroPos==='SB');
+  var isPrem=(h.isPair&&h.v1>=10)||(h.r1==='A'&&h.r2==='K');
+  var isStrong=(h.isPair&&h.v1>=8)||(h.isAx&&h.v2>=12)||(h.isBW&&h.suited&&h.v2>=11);
+  var isMed=(h.isPair&&h.v1>=6)||(h.isAx&&h.suited)||(h.isBW&&h.v2>=10)||(h.isKx&&h.suited&&h.v2>=9);
+  var isSC=h.suited&&!h.isAx&&!h.isKx&&h.gap<=2&&h.v1<=10&&h.v2>=5;
+  var isBluff3b=h.isAx&&h.suited&&(h.v2<=5); // A2s-A5s
+  var openLabel=villainPos==='BTN'?'BTN':villainPos==='CO'?'CO':'EP';
+
+  // Short stack — shove or fold (no calls)
+  if(bb<=22){
+    if(isPrem||isStrong)return{action:'3bet',note:hand+' vs '+openLabel+' open at '+bb+'BB — 3-bet shove. Strong enough to go all-in over the open.'};
+    if(isBB&&isMed)return{action:'call',note:hand+' in BB vs '+openLabel+' open at '+bb+'BB — call. Getting good odds to defend.'};
+    return{action:'fold',note:hand+' vs '+openLabel+' open at '+bb+'BB — fold. Not strong enough to 3-bet shove or call short-stacked.'};
+  }
+
+  // Premium — always 3-bet
+  if(h.r1==='A'&&h.r2==='A')return{action:'3bet',note:'AA — always 3-bet vs '+openLabel+'. Build the pot preflop with the best hand.'};
+  if(h.r1==='K'&&h.r2==='K')return{action:'3bet',note:'KK — always 3-bet vs '+openLabel+'. Never flat KK, you want to go to war preflop.'};
+  if(h.r1==='Q'&&h.r2==='Q')return{action:'3bet',note:'QQ — 3-bet vs '+openLabel+'. Strong enough to 3-bet for value from any position.'};
+  if(h.r1==='A'&&h.r2==='K')return{action:'3bet',note:'AK — 3-bet vs '+openLabel+'. Premium hand, generates fold equity, and has great equity when called.'};
+
+  // JJ: 3-bet IP, call or 3-bet OOP depending on villain width
+  if(h.r1==='J'&&h.r2==='J'){
+    if(isIP)return{action:'3bet',note:'JJ in position vs '+openLabel+' — 3-bet for value. You are ahead of their range and want to narrow the field.'};
+    if(villainPos==='BTN')return{action:'3bet',note:'JJ in '+heroPos+' vs BTN open — 3-bet. BTN opens very wide; JJ crushes their range.'};
+    return{action:'call',note:'JJ in '+heroPos+' vs '+openLabel+' open — call. OOP vs a tight EP/CO range, flatting preserves your equity better than 3-betting into their strong range.'};
+  }
+  // TT
+  if(h.r1==='T'&&h.r2==='T'){
+    if(isIP&&villainPos==='BTN')return{action:'3bet',note:'TT in position vs BTN open — 3-bet. BTN opens ~45% of hands; TT dominates their range.'};
+    if(isIP)return{action:'call',note:'TT in position vs '+openLabel+' — call. Good equity, strong hand, but EP/CO open ranges reduce the incentive to 3-bet.'};
+    if(isBB&&villainPos==='BTN')return{action:'3bet',note:'TT in BB vs BTN — 3-bet. BTN opens wide, TT has too much equity to just call.'};
+    return{action:'call',note:'TT in '+heroPos+' vs '+openLabel+' — call. Solid hand, but 3-betting OOP into a tight EP range puts you in a tough spot. Flat and play postflop.'};
+  }
+  // 99
+  if(h.isPair&&h.v1===9){
+    if(isIP&&villainPos==='BTN')return{action:'3bet',note:'99 in position vs BTN — 3-bet. BTN range is wide enough that 99 is comfortably ahead.'};
+    if(isIP)return{action:'call',note:'99 in position vs '+openLabel+' — call. Good implied odds and set value in position.'};
+    return{action:'call',note:'99 in '+heroPos+' vs '+openLabel+' — call. Set value plus decent equity. 3-betting OOP risks turning this into a coin-flip spot.'};
+  }
+  // 88-66
+  if(h.isPair&&h.v1>=6&&h.v1<=8){
+    if(isIP)return{action:'call',note:hand+' in position vs '+openLabel+' — call for set value. Good implied odds at '+bb+'BB.'};
+    if(isBB)return{action:'call',note:hand+' in BB vs '+openLabel+' — call. Getting pot odds and closing the action.'};
+    return{action:'fold',note:hand+' in SB vs '+openLabel+' — fold. Medium pairs OOP without the pot odds of the BB.'};
+  }
+  // Small pairs
+  if(h.isPair&&h.v1<=5){
+    if(isIP&&bb>=35)return{action:'call',note:hand+' in position vs '+openLabel+' — call for set value at '+bb+'BB.'};
+    if(isBB)return{action:'call',note:hand+' in BB vs '+openLabel+' — call. Getting 2:1+ pot odds to set-mine.'};
+    return{action:'fold',note:hand+' vs '+openLabel+' — fold. Small pairs need position or big pot odds to be profitable.'};
+  }
+  // AQ
+  if(h.isAx&&h.v2===12){
+    if(h.suited){
+      if(isIP||villainPos==='BTN'||villainPos==='CO')return{action:'3bet',note:'AQs vs '+openLabel+' — 3-bet. Strong hand with blockers and nut-flush potential.'};
+      return{action:'call',note:'AQs in '+heroPos+' vs tight '+openLabel+' open — call. Avoid 3-betting into an EP range that dominates AQ with AK frequently.'};
+    }
+    if(isIP&&(villainPos==='BTN'||villainPos==='CO'))return{action:'3bet',note:'AQo in position vs '+openLabel+' — 3-bet. Wide enough range to 3-bet for value.'};
+    if(isBB&&villainPos==='BTN')return{action:'3bet',note:'AQo in BB vs BTN — 3-bet. BTN opens very wide and AQo has strong equity vs their range.'};
+    if(villainPos==='UTG'||villainPos==='HJ')return{action:'fold',note:'AQo vs '+openLabel+' (tight EP) open — fold. AQ is often dominated by AK in an EP range and plays poorly OOP.'};
+    return{action:'call',note:'AQo in '+heroPos+' vs '+openLabel+' — call. Decent hand but avoid 3-betting OOP into a range that has AK frequently.'};
+  }
+  // AJ
+  if(h.isAx&&h.v2===11){
+    if(h.suited&&isIP)return{action:'3bet',note:'AJs in position vs '+openLabel+' — 3-bet bluff with blocker value and nut-flush equity.'};
+    if(h.suited&&isBB&&(villainPos==='BTN'||villainPos==='CO'))return{action:'3bet',note:'AJs in BB vs '+openLabel+' — 3-bet. Wide open range means your hand has strong equity.'};
+    if(isBB)return{action:'call',note:'AJo/AJs in BB vs '+openLabel+' — call. Getting pot odds with a decent hand.'};
+    return{action:'fold',note:'AJo in '+heroPos+' vs '+openLabel+' — fold. Reverse implied odds OOP, dominated by AQ+ in villain range.'};
+  }
+  // Suited aces A2s-A9s
+  if(h.isAx&&h.suited){
+    if(h.v2<=5){ // A2s-A5s are 3-bet bluffs
+      if(isOOP&&(villainPos==='BTN'||villainPos==='CO'))return{action:'3bet',note:hand+' in '+heroPos+' vs '+openLabel+' — 3-bet bluff. Blocks AA/AK, generates fold equity, nut-flush potential when called.'};
+      if(isIP)return{action:'call',note:hand+' in position vs '+openLabel+' — call. Nut-flush potential and implied odds in position.'};
+      return{action:'fold',note:hand+' in '+heroPos+' vs '+openLabel+' — fold. Better as a 3-bet bluff than a call OOP, but tight EP range reduces fold equity.'};
+    }
+    // A6s-A9s
+    if(isIP||isBB)return{action:'call',note:hand+' vs '+openLabel+' — call. Suited ace with implied odds. Good equity in position or from BB.'};
+    return{action:'fold',note:hand+' in SB vs '+openLabel+' — fold. Suited aces play best in position or from BB.'};
+  }
+  // KQs/KJs
+  if(h.isKx&&h.suited&&h.v2>=11){
+    if(isIP||(isBB&&(villainPos==='BTN'||villainPos==='CO')))return{action:'3bet',note:hand+' vs '+openLabel+' — 3-bet. Strong suited broadway with value and equity.'};
+    if(isBB)return{action:'call',note:hand+' in BB vs '+openLabel+' — call. Strong enough to call, 3-betting into EP can be tricky.'};
+    return{action:'call',note:hand+' in '+heroPos+' vs '+openLabel+' — call.'};
+  }
+  // KQo KJo in position
+  if(h.isKx&&!h.suited&&h.v2>=11){
+    if(isIP&&(villainPos==='BTN'||villainPos==='CO'))return{action:'3bet',note:hand+' in position vs '+openLabel+' — 3-bet. Strong offsuit broadway with good equity.'};
+    if(isBB&&villainPos==='BTN')return{action:'3bet',note:hand+' in BB vs BTN — 3-bet. BTN opens wide and KQo/KJo has strong equity.'};
+    if(isBB)return{action:'call',note:hand+' in BB — call. Getting pot odds with a strong hand.'};
+    return{action:'fold',note:hand+' in '+heroPos+' vs '+openLabel+' — fold. Offsuit KJ/KQ plays poorly OOP vs a tight range.'};
+  }
+  // Suited connectors in position or BB
+  if(isSC){
+    if(isIP&&bb>=35)return{action:'call',note:hand+' in position vs '+openLabel+' — call. Implied odds and playability in position at '+bb+'BB.'};
+    if(isBB)return{action:'call',note:hand+' in BB vs '+openLabel+' — call. Pot odds justify defending suited connectors from BB.'};
+    return{action:'fold',note:hand+' in SB vs '+openLabel+' — fold. Suited connectors need position or pot odds to be profitable.'};
+  }
+  // Broadway offsuit
+  if(h.isBW&&!h.suited){
+    if(isIP&&(villainPos==='BTN'||villainPos==='CO')&&h.v2>=10)return{action:'call',note:hand+' in position vs '+openLabel+' — call. Decent equity in position.'};
+    if(isBB&&h.v2>=10)return{action:'call',note:hand+' in BB vs '+openLabel+' — call. Getting pot odds with a broadway hand.'};
+    return{action:'fold',note:hand+' in '+heroPos+' vs '+openLabel+' — fold. Offsuit broadways need strong position or pot odds.'};
+  }
+  // Default fold
+  return{action:'fold',note:hand+' in '+heroPos+' vs '+openLabel+' open at '+bb+'BB — fold.'};
+}
+
+function get3BetAns(hand,pos,bb,villainPos,villainSize){
+  var h=evalH(hand);
+  var isPrem=(h.isPair&&h.v1>=10)||(h.r1==='A'&&h.r2==='K');
+  var isStrong=(h.isPair&&h.v1>=7)||(h.isAx&&h.v2>=11)||(h.isBW&&h.suited);
+  var isMed=(h.isPair&&h.v1>=4)||(h.isAx&&h.suited)||(h.isBW&&h.v2>=10)||(h.isKx&&h.suited&&h.v2>=9);
+  var isIP=(pos==='BTN'||(pos==='CO'&&(villainPos==='SB'||villainPos==='BB')));
+  var remaining=bb-villainSize;
+  var potCommitted=remaining<(bb*0.35); // less than 35% stack behind = committed
+
+  // 4-bet shove threshold
+  var shoveThresh=potCommitted||(bb<=35);
+
+  // Value 4-bet hands (QQ+ AKs always, AKo at most depths)
+  if(h.r1==='A'&&h.r2==='A')return{action:'4bet',note:'AA — always 4-bet. Shove at '+bb+'BB, 4-bet to '+(shoveThresh?'shove':Math.round(villainSize*2.5)+'BB')+' at deeper stacks.'};
+  if(h.r1==='K'&&h.r2==='K')return{action:'4bet',note:'KK — 4-bet for value. At '+bb+'BB '+(shoveThresh?'shove.':'4-bet to '+Math.round(villainSize*2.5)+'BB, call off vs a 5-bet.')};
+  if(h.r1==='Q'&&h.r2==='Q'){
+    if(bb<=40)return{action:'4bet',note:'QQ at '+bb+'BB facing a 3-bet — 4-bet shove. Too shallow to flat and play postflop with an overpair guessing game.'};
+    return{action:'4bet',note:'QQ vs '+villainPos+' 3-bet — 4-bet to ~'+Math.round(villainSize*2.5)+'BB. QQ wants to go to war preflop vs most 3-bet ranges.'};
+  }
+  if(h.r1==='J'&&h.r2==='J'){
+    if(bb<=30)return{action:'4bet',note:'JJ at '+bb+'BB — 4-bet shove. Too shallow to flat comfortably, and JJ is strong vs most 3-bet ranges.'};
+    if(isIP)return{action:'call',note:'JJ in position vs '+villainPos+' 3-bet at '+bb+'BB — call. Deep enough to realize set and overpair equity in position. Avoid 4-betting and turning it into a guessing game.'};
+    return{action:'4bet',note:'JJ OOP vs '+villainPos+' 3-bet — 4-bet shove at '+bb+'BB. Playing JJ OOP in a 3-bet pot deep is difficult. Prefer to end it preflop.'};
+  }
+  if(h.r1==='T'&&h.r2==='T'){
+    if(bb<=25)return{action:'4bet',note:'TT at '+bb+'BB — 4-bet shove. Ahead of most 3-bet bluff ranges and short enough that flatting OOP is bad.'};
+    if(isIP&&bb>=40)return{action:'call',note:'TT in position at '+bb+'BB vs a direct 3-bet of your open — call or 4-bet shove, both are valid. Calling keeps JJ/QQ in their range and realizes equity in position. 4-bet shoving generates fold equity and avoids postflop guessing. Either line is fine; calling is slightly preferred when deep.'};
+    if(bb<=35)return{action:'4bet',note:'TT at '+bb+'BB OOP — 4-bet shove. Not deep enough to flat comfortably out of position.'};
+    return{action:'call',note:'TT at '+bb+'BB — marginal. Call if in position. 4-bet shove if OOP at this depth.'};
+  }
+  // AK
+  if(h.r1==='A'&&h.r2==='K'){
+    if(bb<=40)return{action:'4bet',note:'AK at '+bb+'BB vs 3-bet — 4-bet shove. Strong equity vs 3-bet range, flip or better vs all hands. Never flat AK short-stacked.'};
+    return{action:'4bet',note:'AK vs '+villainPos+' 3-bet — 4-bet. AK has ~55% equity vs QQ and crushes all 3-bet bluffs. 4-bet to ~'+Math.round(villainSize*2.5)+'BB.'};
+  }
+  // AQ — position dependent
+  if(h.isAx&&h.v2===12){
+    if(bb<=30)return{action:'4bet',note:'AQo/AQs at '+bb+'BB — 4-bet shove. Strong blocker, ahead of 3-bet bluff range, short enough to commit.'};
+    if(isIP)return{action:'call',note:'AQs in position vs '+villainPos+' 3-bet — call. Strong hand, good playability in position. Avoid 4-betting and folding to a 5-bet with AQ.'};
+    return{action:'fold',note:'AQo OOP vs '+villainPos+' 3-bet at '+bb+'BB — fold. Dominated by AK often, vulnerable OOP. The weakest of the "strong" hands in this spot.'};
+  }
+  // Suited bluff 4-bets (A5s, A4s)
+  if(h.isAx&&h.suited&&(h.v2===5||h.v2===4||h.v2===3)){
+    if(bb<=30)return{action:'4bet',note:hand+' — 4-bet bluff shove at '+bb+'BB. Strong blockers on AA/AK, fold equity, decent equity when called.'};
+    return{action:'4bet',note:hand+' — 4-bet bluff vs '+villainPos+'. Blocks AA and AK (fewer combos to call), nut flush potential, fold equity. Classic 4-bet bluff hand.'};
+  }
+  // Medium pairs — call or fold based on position
+  if(h.isPair&&h.v1>=7&&h.v1<=9){
+    if(isIP&&bb>=35)return{action:'call',note:hand+' in position vs '+villainPos+' 3-bet at '+bb+'BB — call. Set value, decent equity, and position make this a profitable flat.'};
+    if(bb<=25)return{action:'4bet',note:hand+' at '+bb+'BB vs 3-bet — 4-bet shove. Pair equity + fold equity make this better than calling short-stacked.'};
+    return{action:'fold',note:hand+' OOP vs '+villainPos+' 3-bet at '+bb+'BB — fold. Not strong enough to 4-bet, too hard to play OOP in a 3-bet pot.'};
+  }
+  // Small pairs
+  if(h.isPair&&h.v1<=6){
+    if(isIP&&bb>=50)return{action:'call',note:hand+' in position at '+bb+'BB — marginal call for set value. Need roughly 15x implied odds. Only profitable at this depth in position.'};
+    return{action:'fold',note:hand+' vs '+villainPos+' 3-bet — fold. Small pairs do not have enough equity to call a 3-bet, especially OOP or short-stacked.'};
+  }
+  // Suited connectors
+  if(h.suited&&!h.isAx&&!h.isKx&&h.gap<=2&&bb>=50&&isIP){
+    return{action:'call',note:hand+' in position at '+bb+'BB — can call a 3-bet for implied odds and playability. Deep stack + position make this marginally profitable.'};
+  }
+  // Broadway hands
+  if(h.isBW&&h.suited&&isIP&&bb>=35){
+    return{action:'call',note:hand+' suited in position vs '+villainPos+' 3-bet — call. Strong equity, position, and playability justify a call. Fold if OOP or short-stacked.'};
+  }
+  if(h.isBW&&!h.suited){
+    if(isIP&&h.v2>=11&&bb>=35)return{action:'call',note:hand+' in position vs '+villainPos+' 3-bet — marginal call. Decent equity, playable in position. Fold if OOP.'};
+    return{action:'fold',note:hand+' vs '+villainPos+' 3-bet — fold. Offsuit broadways outside the top range struggle in 3-bet pots, especially OOP.'};
+  }
+  // Default: fold
+  return{action:'fold',note:hand+' vs '+villainPos+' 3-bet to '+villainSize+'BB at '+bb+'BB — fold. Hand does not have the equity or blocker value to call or 4-bet profitably.'};
+}
+
+// ── Facing-3bet for CASH (200BB/100BB) ──
+function getCash3BetAns(hand,pos,bb,villainPos,villainSize){
+  var h=evalH(hand);
+  var isPrem=(h.isPair&&h.v1>=10)||(h.r1==='A'&&h.r2==='K');
+  var isIP=(pos==='BTN'||(pos==='CO'&&(villainPos==='SB'||villainPos==='BB')));
+  var depthLabel=cDepth+'BB '+cTableSize.replace('max','-max');
+
+  if(h.r1==='A'&&h.r2==='A')return{action:'4bet',note:'AA — always 4-bet to ~'+Math.round(villainSize*3)+'BB. Never flat AA in cash games at any depth.'};
+  if(h.r1==='K'&&h.r2==='K')return{action:'4bet',note:'KK — 4-bet to ~'+Math.round(villainSize*3)+'BB. Strong enough to go to war preflop.'};
+  if(h.r1==='Q'&&h.r2==='Q'){
+    if(isIP)return{action:'call',note:'QQ in position at '+depthLabel+' — call the 3-bet. At this depth you have room to navigate postflop and extract max value.'};
+    return{action:'4bet',note:'QQ OOP vs '+villainPos+' 3-bet — 4-bet. Playing QQ OOP in a bloated pot is difficult. Prefer to take control preflop.'};
+  }
+  if(h.r1==='J'&&h.r2==='J'){
+    if(isIP&&cDepth==='200')return{action:'call',note:'JJ in position at 200BB — call. Deep stacks give you set value and strong overpair equity. Postflop edge is high in position.'};
+    if(isIP)return{action:'call',note:'JJ in position at '+depthLabel+' — call. Good equity and position. Be prepared to fold on A/K/Q flops vs continued aggression.'};
+    return{action:'fold',note:'JJ OOP vs '+villainPos+' 3-bet at '+depthLabel+' — fold or 4-bet. Playing JJ OOP in a 3-bet pot deep is a losing spot long-term.'};
+  }
+  if(h.r1==='A'&&h.r2==='K'){
+    if(cDepth==='200')return{action:'4bet',note:'AK at 200BB — 4-bet to ~'+Math.round(villainSize*3)+'BB. AK benefits from fold equity and has excellent equity when called. Do not flat AK in cash games.'};
+    return{action:'4bet',note:'AK at '+depthLabel+' — 4-bet. Strong equity, blocker value, and 4-betting charges draws.'};
+  }
+  if(h.isAx&&h.suited&&(h.v2===5||h.v2===4||h.v2===3)){
+    return{action:'4bet',note:hand+' — 4-bet bluff at '+depthLabel+'. Blocks AA/AK, nut flush potential when called. Classic cash game bluff 4-bet hand. Size to ~'+Math.round(villainSize*3)+'BB.'};
+  }
+  if(h.isAx&&h.v2===12){
+    if(isIP)return{action:'call',note:'AQs in position at '+depthLabel+' — call the 3-bet. Deep stacks make the implied odds strong and you have position. 4-betting AQ risks getting 5-bet off your hand.'};
+    return{action:'fold',note:'AQo OOP vs '+villainPos+' at '+depthLabel+' — fold. Reverse implied odds OOP and vulnerable to AK domination.'};
+  }
+  if(h.isPair&&h.v1>=7&&h.v1<=9){
+    if(isIP&&cDepth==='200')return{action:'call',note:hand+' in position at 200BB — call. Set value is enormous deep stacked, and overpair equity is significant.'};
+    if(isIP)return{action:'call',note:hand+' in position at '+depthLabel+' — call. Good equity and set value justify calling in position.'};
+    return{action:'fold',note:hand+' OOP vs 3-bet at '+depthLabel+' — fold. Medium pairs play poorly OOP in 3-bet pots without hitting a set.'};
+  }
+  if(h.isPair&&h.v1<=6){
+    if(isIP&&cDepth==='200')return{action:'call',note:hand+' in position at 200BB — call for set value. At 200BB effective the implied odds are ~25x. Extremely profitable when you hit.'};
+    if(isIP&&cDepth==='100')return{action:'call',note:hand+' in position at 100BB — marginal call for set value. Need to stack off when you hit. Fold if 3-bet size makes odds unfavorable.'};
+    return{action:'fold',note:hand+' OOP vs 3-bet — fold. Small pairs in 3-bet pots OOP lose money without hitting sets and cannot realize equity easily.'};
+  }
+  if(h.suited&&!h.isAx&&!h.isKx&&h.gap<=1&&cDepth==='200'&&isIP){
+    return{action:'call',note:hand+' in position at 200BB — call. Deep stacks make suited connectors extremely profitable in 3-bet pots. You can win massive pots hitting straights and flushes.'};
+  }
+  if(h.isBW&&h.suited&&isIP){
+    return{action:'call',note:hand+' suited in position at '+depthLabel+' — call the 3-bet. Strong equity, blocker value, and position.'};
+  }
+  return{action:'fold',note:hand+' vs '+villainPos+' 3-bet at '+depthLabel+' — fold. Not in the calling or 4-betting range here.'};
+}
+
+function getNextQuestion(){
+  var pool=QBANK.filter(function(q){return qCatFilter==='All'||q.c===qCatFilter;});
+  if(qSeen.length>=pool.length)qSeen=[];
+  var unseen=pool.filter(function(q,i){return qSeen.indexOf(i)===-1;});
+  if(unseen.length===0)unseen=pool;
+  var pick=unseen[Math.floor(Math.random()*unseen.length)];
+  var idx=QBANK.indexOf(pick);
+  if(idx>=0)qSeen.push(idx);
+  qCur=pick;qAns=null;qSel=null;
+}
+
+/* ── Renderers ── */
+function renderHome(){
+  var days=Math.max(0,Math.ceil((WSOP-new Date())/86400000));
+  var acc=dTot>0?Math.round(dCor/dTot*100):0;
+  var suit=SUITS[suitI];
+  var pct=Math.min(100,Math.max(2,(365-days)/365*100));
+  var html='<div class="anim">';
+  html+='<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:2px"><div style="font-size:22px;font-weight:700;letter-spacing:2px">Four<span style="color:var(--cyan)">ty</span>Two</div><span id="suit-deco" style="font-size:16px;opacity:.18">'+suit+'</span></div>';
+  html+='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);margin-bottom:16px;text-transform:uppercase">WSOP Prep Trainer</div>';
+  html+='<div class="sf2" style="margin-bottom:12px;position:relative;overflow:hidden"><span id="suit-bg" style="position:absolute;right:-10px;top:-15px;font-size:90px;opacity:.04;line-height:1;pointer-events:none">'+suit+'</span>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:9px;letter-spacing:2px;color:var(--cyan);margin-bottom:8px;text-transform:uppercase">WSOP 2026 · Las Vegas</div><div style="font-size:17px;font-weight:700;margin-bottom:5px">Main Series</div><div style="font-size:11px;color:var(--text2);line-height:1.8">Monster Stack · Freezeout<br>Super Turbo Bounty · Colossus</div><div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap"><span class="pill pc">June 4-13</span><span class="pill pn">Skill 70/100</span></div></div>';
+  html+='<div style="text-align:right;flex-shrink:0"><div style="font-size:54px;font-weight:700;line-height:1;color:var(--cyan)">'+days+'</div><div style="font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase">days out</div></div></div>';
+  html+='<div class="pb"><div class="pf" style="width:'+pct+'%"></div></div></div>';
+  html+='<div class="metrics"><div class="metric"><div class="ml">Total XP</div><div class="mv" style="color:var(--gold)">'+xp+'</div></div><div class="metric"><div class="ml">Accuracy</div><div class="mv" style="color:var(--cyan)">'+(dTot>0?acc+'%':'--')+'</div></div><div class="metric"><div class="ml">Streak</div><div class="mv" style="color:var(--violet)">'+streak+'</div></div></div>';
+  html+='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);margin-bottom:10px;text-transform:uppercase">Training Pillars</div>';
+  html+='<div class="sf">';
+  for(var pi=0;pi<PILLARS.length;pi++){
+    var p=PILLARS[pi];var done=p.status==='done',act=p.status==='active';
+    var isOpen=pillarOpen===pi;
+    var lastBorder=pi===PILLARS.length-1&&!isOpen?'border-bottom:none':'';
+    html+='<div class="pillar" style="flex-direction:column;gap:0;padding:0;'+lastBorder+'">';
+    html+='<div data-action="toggle-pillar" data-pi="'+pi+'" style="display:flex;align-items:flex-start;gap:12px;padding:11px 0;cursor:pointer;width:100%">';
+
+    html+='<div style="flex:1;min-width:0">';
+    html+='<div style="font-size:12px;font-weight:600;margin-bottom:2px;color:'+(done?'var(--text2)':act?'var(--text)':'var(--text3)')+'">'+p.name+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">'+p.sub+'</div>';
+    if(p.gaps)html+='<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+p.gaps.map(function(g){return'<span class="pill pp" style="font-size:9px">&#9651; '+g+'</span>';}).join('')+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
+    
+    html+='<span style="font-size:14px;color:var(--text3);transition:transform .2s;transform:'+(isOpen?'rotate(90deg)':'rotate(0)')+'">&#8250;</span>';
+    html+='</div></div>';
+    if(isOpen&&p.theory){
+      html+='<div style="padding:0 0 12px 42px" class="anim">';
+      html+='<div style="border-left:2px solid '+(done?'var(--green)':act?'var(--cyan)':'var(--text3)')+';padding-left:12px">';
+      for(var ti=0;ti<p.theory.length;ti++){
+        html+='<div style="font-size:11px;color:var(--text2);line-height:1.7;padding:4px 0;border-bottom:1px solid var(--bd)">';
+        html+='<span style="color:'+(done?'var(--green)':act?'var(--cyan)':'var(--text3)')+';margin-right:6px;font-size:9px">&#9658;</span>'+p.theory[ti]+'</div>';
+      }
+      html+='</div></div>';
+    }
+    html+='</div>';
+  }
+  html+='</div><div style="border-left:2px solid var(--cyan);padding-left:12px;margin-top:14px;font-size:11px;color:var(--text2);line-height:1.9"><div style="font-size:9px;letter-spacing:2px;color:var(--cyan);margin-bottom:4px;text-transform:uppercase">Today\'s Focus</div>Pillar 3: oversized open responses<br>A7s multiway resteal math<br>Blind vs blind defense ranges</div></div>';
+  return html;
+}
+
+function renderDrill(){
+  if(!hand)return'';
+  var h=evalH(hand);
+  var hcol=h.isPair?'var(--gold)':h.suited?'var(--pink)':'var(--text)';
+  var is3bet=dMode==='3bet';
+  var isFacingOpen=(dMode==='vs_co'||dMode==='vs_btn'||dMode==='vs_ep');
+  var villainOpenPos=dMode==='vs_co'?'CO':dMode==='vs_btn'?'BTN':dMode==='vs_ep'?'EP':'';
+  // Guard: if entering 3bet mode with stale null state, re-init
+  if(is3bet&&(d3VillainPos===null||d3VillainSize===null)){newDrill();}
+  var html='<div class="anim">';
+
+  // Mode selector row
+  html+='<div class="tab-row" style="margin-bottom:14px">';
+  var modes=[['rfi','RFI'],['vs_co','vs CO'],['vs_btn','vs BTN'],['bvb','BvB'],['vs_ep','vs EP'],['short_stack','Short'],['3bet','3-Bet']];
+  for(var mi=0;mi<modes.length;mi++)html+='<button class="tb'+(dMode===modes[mi][0]?' on':'')+'" data-action="drill-mode" data-mode="'+modes[mi][0]+'">'+modes[mi][1]+'</button>';
+  html+='</div>';
+
+  // Scenario context label
+  var sceneDesc='';
+  if(dMode==='vs_co')sceneDesc='CO has opened — you are in '+pos+' (3-bet, call, or fold?)';
+  else if(dMode==='vs_btn')sceneDesc='BTN has opened — you are in '+pos+' (3-bet, call, or fold?)';
+  else if(dMode==='bvb')sceneDesc='Folded to SB — BvB spot';
+  else if(dMode==='vs_ep')sceneDesc='EP has opened — you are in '+pos+' (3-bet, call, or fold?)';
+  else if(dMode==='short_stack')sceneDesc='Short stack — shove or fold';
+  else if(is3bet)sceneDesc='You opened from '+pos+', '+(d3VillainPos||'BB')+' 3-bets to '+(d3VillainSize||8)+'BB';
+
+  if(sceneDesc)html+='<div style="font-size:11px;color:var(--violet);text-align:center;margin-bottom:10px;font-weight:600">'+sceneDesc+'</div>';
+
+  // Hand display
+  html+='<div class="hand-big glow" style="color:'+hcol+'">'+hand+'</div>';
+  html+='<div style="display:flex;justify-content:center;gap:28px;font-size:12px;color:var(--text2);margin-bottom:10px">';
+  html+='<span>Pos <strong style="color:var(--text)">'+pos+'</strong></span>';
+  html+='<span>Stack <strong style="color:var(--text)">'+bb+'BB</strong></span>';
+  html+='</div>';
+
+  // Zone / context pills
+  html+='<div style="text-align:center;margin-bottom:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">';
+  if(!is3bet){
+    var zoneLabel=bb<=22?'short stack - shove or fold':bb<=39?'dead zone (23-39BB)':'standard depth';
+    var zoneClass=bb<=22?'pv':bb<=39?'pp':'pc';
+    html+='<span class="pill '+zoneClass+'">'+zoneLabel+'</span>';
+    if(pos==='SB'||pos==='BB')html+='<span class="pill pv">&#9830; Blind vs Blind</span>';
+  }else{
+    var _vs=d3VillainSize||8;
+    html+='<span class="pill pv">3-bet to '+_vs+'BB</span>';
+    var behind=bb-_vs;
+    html+='<span class="pill '+(behind<bb*0.35?'pp':'pc')+'">'+behind+'BB behind</span>';
+  }
+  html+='</div>';
+  html+='<div style="text-align:center;font-size:16px;letter-spacing:8px;opacity:.1;margin:8px 0">&#9824; &#9829; &#9830; &#9827;</div>';
+
+  if(!dRes){
+    html+='<div class="act-row">';
+    if(is3bet){
+      html+='<button class="abtn a-shove" data-action="drill" data-choice="4bet">&#8679; 4-Bet</button>';
+      html+='<button class="abtn a-open" data-action="drill" data-choice="call">&#8596; Call</button>';
+      html+='<button class="abtn a-fold" data-action="drill" data-choice="fold">&#10007; Fold</button>';
+    }else if(isFacingOpen){
+      html+='<button class="abtn a-shove" data-action="drill" data-choice="3bet">&#8679; 3-Bet</button>';
+      html+='<button class="abtn a-open" data-action="drill" data-choice="call">&#8596; Call</button>';
+      html+='<button class="abtn a-fold" data-action="drill" data-choice="fold">&#10007; Fold</button>';
+    }else if(dMode==='bvb'&&pos==='BB'){
+      html+='<button class="abtn a-shove" data-action="drill" data-choice="3bet">&#8679; 3-Bet</button>';
+      html+='<button class="abtn a-open" data-action="drill" data-choice="call">&#8596; Call</button>';
+      html+='<button class="abtn a-fold" data-action="drill" data-choice="fold">&#10007; Fold</button>';
+    }else if(bb<=22){
+      html+='<button class="abtn a-shove" data-action="drill" data-choice="shove">&#8679; Shove</button>';
+      html+='<button class="abtn a-fold" data-action="drill" data-choice="fold">&#10007; Fold</button>';
+    }else{
+      html+='<button class="abtn a-open" data-action="drill" data-choice="open">&#8593; Open</button>';
+      html+='<button class="abtn a-fold" data-action="drill" data-choice="fold">&#10007; Fold</button>';
+    }
+    html+='</div>';
+  }else{
+    var ok=dRes==='ok';
+    var lbl=dAns.action==='4bet'?'4-Bet':dAns.action==='3bet'?'3-Bet':dAns.action==='call'?'Call':dAns.action==='shove'?'Shove':dAns.action==='open'?'Open':'Fold';
+    html+='<div class="anim"><div class="'+(ok?'res-ok':'res-no')+'" style="margin-bottom:8px">';
+    html+='<div style="font-weight:700;font-size:13px;margin-bottom:6px;color:'+(ok?'var(--green)':'var(--pink)')+'">';
+    html+=(ok?'&#10003; Correct - +10 XP':'&#10007; Incorrect - +2 XP')+'</div>';
+    html+='<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:6px">'+dAns.note+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">Answer: <strong style="color:var(--text)">'+lbl+'</strong></div></div>';
+    if(dTot>0){
+      var ac=Math.round(dCor/dTot*100);
+      html+='<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:6px">';
+      html+='<span>Session: '+dCor+'/'+dTot+'</span>';
+      html+='<span style="color:'+(ac>=70?'var(--green)':ac>=50?'var(--gold)':'var(--pink)')+'">'+ac+'% accuracy</span></div>';
+    }
+    html+='<button class="nbtn" data-action="next-drill">Next hand &#8594;</button></div>';
+  }
+  html+='</div>';return html;
+}
+
+function renderFlash(){
+  var deck=FC[fcP]||[];var card=deck[fcI]||{q:'',a:''};
+  var html='<div class="anim"><div class="tab-row">';
+  var tabs=[[1,'P1: Ranges'],[2,'P2: Post-Flop'],[3,'P3: 3-Bet'],[4,'P4: BvB & ICM']];
+  for(var ti=0;ti<tabs.length;ti++)html+='<button class="tb'+(fcP===tabs[ti][0]?' on':'')+'" data-action="fc-pillar" data-p="'+tabs[ti][0]+'">'+tabs[ti][1]+'</button>';
+  html+='<span style="margin-left:auto;font-size:10px;color:var(--text3)">'+(fcI+1)+'/'+deck.length+'</span></div>';
+  html+='<div class="fcard" data-action="fc-flip">';
+  if(!fcF){html+='<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Question - tap to reveal</div><div class="fc-q">'+card.q+'</div><div style="margin-top:18px;font-size:22px;opacity:.07;letter-spacing:10px">&#9824; &#9829; &#9830; &#9827;</div>';}
+  else{html+='<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px">Answer</div><div class="fc-a">'+card.a+'</div>';}
+  html+='</div><div style="font-size:9px;text-align:center;color:var(--text3);letter-spacing:1px;margin:6px 0 10px">TAP CARD TO FLIP</div>';
+  html+='<div style="display:flex;gap:6px;margin-bottom:'+(fcF?'8px':'0')+'"><button class="tb" style="flex:1;border-radius:7px" data-action="fc-prev">&#8592; Prev</button><button class="tb" style="flex:1;border-radius:7px" data-action="fc-next">Next &#8594;</button></div>';
+  if(fcF){html+='<div style="display:flex;gap:6px" class="anim">';var ratings=[['Easy','var(--green)','rgba(0,255,136,.08)','rgba(0,255,136,.25)'],['Medium','var(--gold)','rgba(245,200,66,.1)','rgba(245,200,66,.25)'],['Hard','var(--pink)','rgba(255,45,120,.08)','rgba(255,45,120,.25)']];for(var ri=0;ri<ratings.length;ri++)html+='<button style="flex:1;padding:9px;font-size:11px;cursor:pointer;border-radius:7px;border:1px solid '+ratings[ri][3]+';background:'+ratings[ri][2]+';color:'+ratings[ri][1]+';font-family:inherit;font-weight:600" data-action="fc-next">'+ratings[ri][0]+'</button>';html+='</div>';}
+  html+='</div>';return html;
+}
+
+function renderQuiz(){
+  var cats=['All','Ranges','Depth','Short Stack','C-Bet','3-Bet','BvB','ICM','Oversize'];
+  var total=QBANK.length;
+  var prog=qSeen.length;
+  var progPct=Math.round(prog/total*100);
+  var html='<div class="anim">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div style="font-size:18px;font-weight:700">Quiz Bank</div><div style="font-size:10px;color:var(--text3)">'+prog+'/'+total+' seen</div></div>';
+  html+='<div class="qpb"><div class="qpf" style="width:'+progPct+'%"></div></div>';
+  html+='<div class="tab-row" style="margin-bottom:14px">';
+  for(var ci=0;ci<cats.length;ci++){var cat=cats[ci];html+='<button class="tb'+(qCatFilter===cat?' on':'')+'" data-action="quiz-cat" data-cat="'+cat+'">'+cat+'</button>';}
+  html+='</div>';
+  if(!qCur){
+    html+='<div style="text-align:center;padding:30px 0">';
+    html+='<div style="font-size:32px;opacity:.15;margin-bottom:16px">&#9827;</div>';
+    html+='<div style="font-size:13px;color:var(--text2);margin-bottom:20px">'+total+' questions across 8 categories<br>Randomized · Tracks seen questions · No repeats</div>';
+    html+='<button class="gbtn" style="max-width:280px;margin:0 auto" data-action="next-quiz">Start Quiz &#8594;</button>';
+    html+='</div>';
+  }else{
+    var catColor=CAT_COLORS[qCur.c]||'var(--cyan)';
+    html+='<div class="cat-badge" style="background:'+catColor+'22;color:'+catColor+';border:1px solid '+catColor+'44">'+qCur.c+'</div>';
+    html+='<div class="qbox">'+qCur.q+'</div>';
+    for(var oi=0;oi<qCur.o.length;oi++){
+      var opt=qCur.o[oi];var l=opt.charAt(0);var cls='qopt';
+      if(qAns){if(qCur.a===l)cls+=' qok';else if(qSel===l)cls+=' qno';else cls+=' qdim';}
+      html+='<button class="'+cls+'" data-action="ans-quiz" data-qi="'+oi+'"'+(qAns?' disabled':'')+'>'+opt+'</button>';
+    }
+    if(qAns){
+      var ok2=qAns==='ok';
+      html+='<div class="anim" style="margin-top:8px;padding:12px;border-radius:8px;background:'+(ok2?'rgba(0,255,136,.06)':'var(--bg3)')+';border:1px solid '+(ok2?'rgba(0,255,136,.2)':'var(--bd)')+'\">';
+      html+='<div style="font-weight:700;font-size:12px;margin-bottom:6px;color:'+(ok2?'var(--green)':'var(--pink)')+'">'+(ok2?'&#10003; Correct - +15 XP':'Answer: '+qCur.a+' - +3 XP')+'</div>';
+      html+='<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:10px">'+qCur.e+'</div>';
+      html+='<button class="gbtn" data-action="next-quiz">Next question &#8594;</button>';
+      html+='</div>';
+    }
+  }
+  html+='</div>';return html;
+}
+
+function renderGrid(){
+  var LEGENDS={'40':[['g-prem','Premium (gold)'],['g-open','Open (blue)'],['g-shove','Shove (lime)'],['g-fold','Fold']],'30':[['g-prem','Premium (gold)'],['g-open','Open (blue)'],['g-dead','Dead zone (orange)'],['g-shove','Shove (lime)'],['g-fold','Fold']],'22':[['g-prem','Premium (gold)'],['g-shove','Shove (lime)'],['g-fold','Fold']],'15':[['g-prem','Shove strong (lime)'],['g-sh15','Shove marginal (amber)'],['g-fold','Fold']],'blvb':[['g-prem','Premium (gold)'],['g-open','Open (blue)'],['g-blvb','BvB defend (teal)'],['g-fold','Fold']]};
+  var LABELS={'40':'40BB+ UTG open ranges','30':'30BB UTG - dead zone shown','22':'22BB shove-or-fold','15':'15BB push/fold','blvb':'Blind vs blind (SB/BB)'};
+  var html='<div class="anim"><div style="font-size:18px;font-weight:700;margin-bottom:4px">Range Grid</div><div style="font-size:10px;color:var(--text3);margin-bottom:12px">Stack-depth zones</div><div class="tab-row">';
+  var gtabs=[['40','40BB+'],['30','30BB'],['22','22BB'],['15','15BB'],['blvb','BvB']];
+  for(var gti=0;gti<gtabs.length;gti++)html+='<button class="tb'+(gridD===gtabs[gti][0]?' on':'')+'" data-action="grid-depth" data-depth="'+gtabs[gti][0]+'">'+gtabs[gti][1]+'</button>';
+  html+='</div><div style="font-size:10px;color:var(--cyan);margin-bottom:8px;font-weight:600">'+LABELS[gridD]+'</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">';
+  var leg=LEGENDS[gridD]||[];for(var li=0;li<leg.length;li++)html+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)"><div class="gc '+leg[li][0]+'" style="width:13px;height:13px;padding:0;flex-shrink:0"></div>'+leg[li][1]+'</div>';
+  html+='</div><div class="grid-wrap"><div></div>';
+  for(var ri2=0;ri2<RANKS.length;ri2++)html+='<div style="font-size:9px;text-align:center;color:var(--text3);font-weight:600;padding:2px 0">'+RANKS[ri2]+'</div>';
+  for(var i=0;i<RANKS.length;i++){
+    html+='<div style="font-size:9px;color:var(--text3);font-weight:600;display:flex;align-items:center;justify-content:center">'+RANKS[i]+'</div>';
+    for(var j=0;j<RANKS.length;j++){var h2=i===j?RANKS[i]+RANKS[i]:(i<j?RANKS[i]+RANKS[j]+'s':RANKS[j]+RANKS[i]+'o');html+='<div class="gc g-'+getZone(h2,gridD)+'" title="'+h2+'">'+h2+'</div>';}
+  }
+  html+='</div><p style="font-size:9px;color:var(--text3);margin-top:7px">Suited upper-right · Pairs diagonal · Offsuit lower-left</p></div>';
+  return html;
+}
+
+/* ══════════════════════════════════════
+   200BB CASH GAME DATA & LOGIC
+══════════════════════════════════════ */
+var CASH_POS_6MAX=['UTG','UTG+1','HJ','CO','BTN','SB'];
+var CASH_POS_8MAX=['UTG','UTG+1','UTG+2','UTG+3','HJ','CO','BTN','SB'];
+var CASH_PW_6MAX={UTG:.14,'UTG+1':.17,HJ:.22,CO:.30,BTN:.52,SB:.45};
+var CASH_PW_8MAX={UTG:.11,'UTG+1':.13,'UTG+2':.16,'UTG+3':.18,HJ:.22,CO:.29,BTN:.50,SB:.42};
+var cHand=null,cPos=null,cRes=null,cAns=null,cCor=0,cTot=0;
+var cMode='rfi',c3VPos=null,c3VSize=null;
+var cTableSize='6max',cDepth='200';
+
+// 200BB cash open ranges (6-max context, Jonathan Little / GTO base)
+var CASH_OPEN=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s K5s QJs QTs Q9s Q8s JTs J9s J8s T9s T8s 98s 97s 87s 86s 76s 75s 65s 64s 54s 53s 43s AKo AQo AJo ATo A9o KQo KJo KTo QJo'.split(' '));
+var CASH_OPEN_UTG=new Set('AA KK QQ JJ TT 99 88 77 66 55 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s 98s 87s 76s 65s 54s AKo AQo AJo ATo KQo KJo'.split(' '));
+var CASH_OPEN_HJ=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s QJs QTs Q9s JTs J9s T9s T8s 98s 97s 87s 76s 65s 54s AKo AQo AJo ATo A9o KQo KJo KTo QJo'.split(' '));
+var CASH_OPEN_CO=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s QJs QTs Q9s Q8s JTs J9s J8s T9s T8s 98s 97s 87s 86s 76s 75s 65s 64s 54s 43s AKo AQo AJo ATo A9o KQo KJo KTo QJo'.split(' '));
+var CASH_OPEN_BTN=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s K5s K4s QJs QTs Q9s Q8s Q7s JTs J9s J8s J7s T9s T8s T7s 98s 97s 96s 87s 86s 85s 76s 75s 74s 65s 64s 54s 53s 43s 42s 32s AKo AQo AJo ATo A9o A8o A7o KQo KJo KTo K9o QJo QTo JTo'.split(' '));
+var CASH_OPEN_SB=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s K5s K4s K3s QJs QTs Q9s Q8s Q7s Q6s JTs J9s J8s J7s T9s T8s T7s 98s 97s 96s 87s 86s 76s 75s 65s 64s 54s AKo AQo AJo ATo A9o A8o A7o A6o KQo KJo KTo K9o QJo QTo JTo T9o'.split(' '));
+
+// ── 8-max ranges (tighter — 2 extra players behind) ──
+var CASH_OPEN_8MAX_UTG=new Set('AA KK QQ JJ TT 99 88 AKs AQs AJs ATs A9s A8s A5s A4s A3s A2s KQs KJs KTs QJs JTs T9s 98s AKo AQo AJo KQo'.split(' '));
+var CASH_OPEN_8MAX_UTG1=new Set('AA KK QQ JJ TT 99 88 77 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s 98s 87s AKo AQo AJo ATo KQo KJo'.split(' '));
+var CASH_OPEN_8MAX_UTG2=new Set('AA KK QQ JJ TT 99 88 77 66 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s 98s 87s 76s AKo AQo AJo ATo KQo KJo'.split(' '));
+var CASH_OPEN_8MAX_UTG3=new Set('AA KK QQ JJ TT 99 88 77 66 55 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s 98s 87s 76s 65s AKo AQo AJo ATo KQo KJo'.split(' '));
+var CASH_OPEN_8MAX_HJ=CASH_OPEN_UTG; // 8max HJ ~= 6max UTG+1
+var CASH_OPEN_8MAX_CO=CASH_OPEN_HJ;
+var CASH_OPEN_8MAX_BTN=CASH_OPEN_CO;  // slightly tighter btn in 8max
+var CASH_OPEN_8MAX_SB=CASH_OPEN_BTN;
+
+// ── 100BB sets (slightly tighter for speculative hands vs 200BB) ──
+var CASH_OPEN_100_UTG=new Set('AA KK QQ JJ TT 99 88 77 66 55 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s QJs QTs JTs T9s 98s 87s 76s 65s AKo AQo AJo ATo KQo KJo'.split(' '));
+var CASH_OPEN_100_HJ=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s QJs QTs Q9s JTs J9s T9s T8s 98s 97s 87s 76s 65s 54s AKo AQo AJo ATo A9o KQo KJo KTo'.split(' '));
+var CASH_OPEN_100_CO=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s QJs QTs Q9s Q8s JTs J9s J8s T9s T8s 98s 97s 87s 86s 76s 75s 65s 54s 43s AKo AQo AJo ATo A9o KQo KJo KTo QJo'.split(' '));
+var CASH_OPEN_100_BTN=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s K5s QJs QTs Q9s Q8s Q7s JTs J9s J8s J7s T9s T8s T7s 98s 97s 96s 87s 86s 76s 75s 65s 64s 54s 43s 32s AKo AQo AJo ATo A9o A8o A7o KQo KJo KTo K9o QJo QTo JTo'.split(' '));
+var CASH_OPEN_100_SB=CASH_OPEN_100_BTN;
+
+// 3-bet ranges (IP = BTN 3-bet vs CO/HJ; OOP = SB/BB 3-bet vs BTN)
+
+// BB defense vs BTN (roughly 50-55% of hands)
+var CASH_BB_DEF=new Set('AA KK QQ JJ TT 99 88 77 66 55 44 33 22 AKs AQs AJs ATs A9s A8s A7s A6s A5s A4s A3s A2s KQs KJs KTs K9s K8s K7s K6s QJs QTs Q9s Q8s Q7s JTs J9s J8s T9s T8s T7s 98s 97s 87s 86s 76s 75s 65s 64s 54s AKo AQo AJo ATo A9o A8o A7o A6o A5o A4o A3o A2o KQo KJo KTo K9o K8o QJo QTo Q9o JTo J9o T9o T8o 98o 97o 87o 76o'.split(' '));
+
+function getCashOpenSet(pos){
+  var is8=cTableSize==='8max';
+  var is100=cDepth==='100';
+  if(is8){
+    if(pos==='UTG')return CASH_OPEN_8MAX_UTG;
+    if(pos==='UTG+1')return CASH_OPEN_8MAX_UTG1;
+    if(pos==='UTG+2')return CASH_OPEN_8MAX_UTG2;
+    if(pos==='UTG+3')return CASH_OPEN_8MAX_UTG3;
+    if(pos==='HJ')return CASH_OPEN_8MAX_HJ;
+    if(pos==='CO')return CASH_OPEN_8MAX_CO;
+    if(pos==='BTN')return CASH_OPEN_8MAX_BTN;
+    if(pos==='SB')return CASH_OPEN_8MAX_SB;
+    return CASH_OPEN_BTN;
+  }
+  if(is100){
+    if(pos==='UTG'||pos==='UTG+1')return CASH_OPEN_100_UTG;
+    if(pos==='HJ')return CASH_OPEN_100_HJ;
+    if(pos==='CO')return CASH_OPEN_100_CO;
+    if(pos==='BTN')return CASH_OPEN_100_BTN;
+    if(pos==='SB')return CASH_OPEN_100_SB;
+    return CASH_OPEN_100_BTN;
+  }
+  // 6-max 200BB default
+  if(pos==='UTG'||pos==='UTG+1')return CASH_OPEN_UTG;
+  if(pos==='HJ')return CASH_OPEN_HJ;
+  if(pos==='CO')return CASH_OPEN_CO;
+  if(pos==='BTN')return CASH_OPEN_BTN;
+  if(pos==='SB')return CASH_OPEN_SB;
+  return CASH_OPEN_BTN;
+}
+
+function evalCashHand(h){
+  var isPair=h.length===2,suited=h.endsWith('s');
+  var r1=h[0],r2=h[1],v1=RV[r1],v2=RV[r2];
+  var isAx=r1==='A',isKx=!isPair&&r1==='K';
+  var gap=isPair?0:Math.abs(v1-v2);
+  var isSC=suited&&!isAx&&!isKx&&gap<=2&&v1<=10&&v2>=5;
+  var isPrem=(isPair&&v1>=10)||(r1==='A'&&r2==='K');
+  var depthLabel=cDepth+'BB '+cTableSize.replace('max','-max');
+  var openSet=getCashOpenSet(cPos);
+  var inOpen=openSet.has(h);
+  var action=inOpen?'open':'fold';
+  var note='';
+  if(inOpen){
+    if(isPrem)note=h+' is premium — standard open from '+cPos+' ('+depthLabel+'). Size 2.5BB, 3BB from SB.';
+    else if(isSC&&cDepth==='200')note=h+' from '+cPos+' — open. At 200BB suited connectors have massive implied odds. One of the biggest edges in deep stack cash.';
+    else if(isSC&&cDepth==='100')note=h+' from '+cPos+' — open. 100BB still gives solid implied odds for suited connectors in position.';
+    else if(isAx&&suited)note=h+' from '+cPos+' — open. Suited aces have nut-flush potential and strong equity ('+depthLabel+').';
+    else if(isPair)note=h+' from '+cPos+' — open for set-mining. '+depthLabel+' gives the implied odds to profitably flop sets.';
+    else note=h+' from '+cPos+' — standard open ('+depthLabel+'). Size to 2.5BB.';
+  }else{
+    var tableNote=cTableSize==='8max'?' 8-max requires tighter ranges — 2 extra players behind increase the chance of a 3-bet or strong caller.':' Range is tight at this position in 6-max.';
+    var depthNote=cDepth==='100'?' At 100BB speculative hands need more equity to compensate for lower implied odds vs 200BB.':'';
+    if(isPair&&v1<=5)note=h+' from '+cPos+' — fold.'+tableNote+depthNote+' Small pairs need 15x implied odds; stack depth or position does not justify it here.';
+    else if(isKx&&!suited)note=h+' from '+cPos+' — fold. Weak offsuit K-x has reverse implied odds when dominated by AK, KQ.'+tableNote;
+    else note=h+' from '+cPos+' — fold ('+depthLabel+').'+tableNote+depthNote;
+  }
+  return{action:action,note:note};
+}
+
+function newCashDrill(){
+  cHand=rndHand();
+  var positions=cTableSize==='8max'?CASH_POS_8MAX:CASH_POS_6MAX;
+  cPos=positions[Math.floor(Math.random()*positions.length)];
+  cRes=null;cAns=null;
+  if(cMode==='3bet'){
+    var heroPos=cTableSize==='8max'?['UTG','UTG+1','UTG+2','UTG+3','HJ','CO','BTN']:['UTG','UTG+1','HJ','CO','BTN'];
+    cPos=rand(heroPos);
+    // Only use hands in hero's actual cash opening range for this position
+    var rks=['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+    var validC=[];
+    for(var ri2=0;ri2<rks.length;ri2++){
+      for(var rj2=0;rj2<rks.length;rj2++){
+        var hh;
+        if(ri2===rj2) hh=rks[ri2]+rks[ri2];
+        else if(ri2<rj2) hh=rks[ri2]+rks[rj2]+'s';
+        else hh=rks[rj2]+rks[ri2]+'o';
+        if(getCashOpenSet(cPos).has(hh)) validC.push(hh);
+      }
+    }
+    validC=validC.filter(function(v,i,a){return a.indexOf(v)===i;});
+    cHand=validC.length>0?rand(validC):rndHand();
+    var vOptions=VILLAIN_POSITIONS_VS[cPos]||['BB'];
+    c3VPos=rand(vOptions);
+    c3VSize=rand(VILLAIN_3BET_SIZES);
+  }
+}
+function answerCash(chosen){
+  var ans=evalCashHand(cHand);
+  var ok=chosen===ans.action;
+  cAns=ans;cRes=ok?'ok':'no';
+  cCor+=(ok?1:0);cTot++;
+  xp+=(ok?10:2);streak=ok?streak+1:0;
+  save();updHdr();render();
+}
+
+// Cash game key concepts for the info panel
+var CASH_TIPS=[
+  {title:'Cash sizing rules',body:'Open 2.5BB from all positions, 3BB from SB — same at 100BB and 200BB. 3-bet to 8-9BB IP, 10-12BB OOP. 4-bet to ~22-25BB. These are smaller % of stack vs tournament sizing.'},
+  {title:'Range width: 100BB vs 200BB',body:'Both depths open wider than tournaments. 200BB: BTN opens 52%+, speculative hands print money. 100BB: slightly tighter with small pairs and low SCs from early position — implied odds are lower but still much deeper than tournaments.'},
+  {title:'Suited connectors: depth matters',body:'At 200BB suited connectors (54s-T9s) are gold — you can win 200BB pots when you hit. At 100BB still very playable but trim the bottom end (32s, 43s, 42s) from early positions. Stacks must support the implied odds math.'},
+  {title:'BB defense in cash games',body:'Defend ~50-55% vs BTN open at any depth. Getting 3:1 pot odds, closing the action, no ICM pressure. In 8-max defend slightly tighter — more players have entered already and ranges are stronger.'},
+  {title:'3-bet strategy',body:'3-bet for value: QQ+, AK. 3-bet bluff: A5s-A2s (blocker + nut flush potential), K2s-K5s. In position 3-bets are ~3x, OOP are 3.5-4x.'},
+  {title:'8-max vs 6-max adjustments',body:'8-max tightens every position by roughly one seat. UTG in 8-max is tighter than UTG in 6-max. BTN and CO remain wide but HJ, UTG, UTG+1 drop speculative hands. More players = higher chance of a 3-bet or strong caller behind you.'},
+  {title:'No ICM, no bubble',body:'Cash game decisions are pure ChipEV. Never fold a profitable call to protect chips — you can always rebuy. Play every hand on its merits.'},
+  {title:'Position and initiative',body:'At 200BB, position is worth even more. Being in position means you can bluff multi-street more effectively and realize equity more cheaply.'},
+];
+var cashTipOpen=-1;
+
+function renderCash(){
+  if(!cHand)newCashDrill();
+  var h=cHand;var hinfo=function(){var isPair=h.length===2,suited=h.endsWith('s');var r1=h[0],v1=RV[r1];return{isPair:isPair,suited:suited,v1:v1,r1:r1};};
+  var hi=hinfo();
+  var hcol=hi.isPair?'var(--gold)':hi.suited?'var(--pink)':'var(--text)';
+  var posColor={'UTG':'var(--pink)','UTG+1':'var(--pink)','HJ':'var(--gold)','CO':'var(--gold)','BTN':'var(--green)','SB':'var(--violet)'};
+  var html='<div class="anim">';
+
+  // Header
+  html+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">';
+  html+='<div><div style="font-size:18px;font-weight:700">Cash Drill</div>';
+  html+='<div style="font-size:10px;color:var(--text3)">'+cDepth+'BB · '+cTableSize.replace("max","-max")+' · Live cash GTO ranges</div></div>';
+  html+='<div style="text-align:right"><div style="font-size:10px;color:var(--text3)">Session</div>';
+  html+='<div style="font-size:14px;font-weight:700;color:var(--cyan)">'+cCor+'/'+cTot+'</div></div></div>';
+
+  // Config toggles: table size + depth
+  html+='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center">';
+  html+='<div style="font-size:9px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-right:4px">Table</div>';
+  html+='<button class="tb'+(cTableSize==='6max'?' on':'')+'" data-action="cash-cfg" data-k="table" data-v="6max">6-max</button>';
+  html+='<button class="tb'+(cTableSize==='8max'?' on':'')+'" data-action="cash-cfg" data-k="table" data-v="8max">8-max</button>';
+  html+='<div style="width:1px;height:20px;background:var(--bd);margin:0 4px"></div>';
+  html+='<div style="font-size:9px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-right:4px">Depth</div>';
+  html+='<button class="tb'+(cDepth==='100'?' on':'')+'" data-action="cash-cfg" data-k="depth" data-v="100">100BB</button>';
+  html+='<button class="tb'+(cDepth==='200'?' on':'')+'" data-action="cash-cfg" data-k="depth" data-v="200">200BB</button>';
+  html+='</div>';
+
+  // Hand display
+  // Cash mode toggle
+  html+='<div class="tab-row" style="margin-bottom:14px">';
+  html+='<button class="tb'+(cMode==='rfi'?' on':'')+'" data-action="cash-mode" data-mode="rfi">RFI</button>';
+  html+='<button class="tb'+(cMode==='3bet'?' on':'')+'" data-action="cash-mode" data-mode="3bet">Facing 3-Bet</button>';
+  html+='</div>';
+  var is3betC=cMode==='3bet';
+  if(is3betC){
+    html+='<div style="font-size:11px;color:var(--violet);text-align:center;margin-bottom:10px;font-weight:600">You opened from '+cPos+', '+c3VPos+' 3-bets to '+c3VSize+'BB</div>';
+  }else{
+    html+='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-align:center;margin-bottom:12px;text-transform:uppercase">Open or fold?</div>';
+  }
+  html+='<div class="hand-big glow" style="color:'+hcol+'">'+h+'</div>';
+  html+='<div style="display:flex;justify-content:center;gap:28px;font-size:13px;color:var(--text2);margin-bottom:12px">';
+  html+='<span>Position <strong style="color:'+(posColor[cPos]||'var(--text)')+'">'+cPos+'</strong></span>';
+  html+='<span>Stack <strong style="color:var(--cyan)">'+cDepth+'BB</strong></span>';
+  html+='</div>';
+  if(is3betC){
+    html+='<div style="text-align:center;margin-bottom:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">';
+    html+='<span class="pill pv">3-bet to '+c3VSize+'BB</span>';
+    var behind2=parseInt(cDepth)-c3VSize;
+    html+='<span class="pill '+(behind2<parseInt(cDepth)*0.35?'pp':'pc')+'">'+behind2+'BB behind</span>';
+    html+='</div>';
+  }
+
+  if(!cRes){
+    html+='<div class="act-row">';
+    if(is3betC){
+      html+='<button class="abtn a-shove" data-action="cash" data-choice="4bet">&#8679; 4-Bet</button>';
+      html+='<button class="abtn a-open" data-action="cash" data-choice="call">&#8596; Call</button>';
+      html+='<button class="abtn a-fold" data-action="cash" data-choice="fold">&#10007; Fold</button>';
+    }else{
+      html+='<button class="abtn a-open" data-action="cash" data-choice="open">&#8593; Open</button>';
+      html+='<button class="abtn a-fold" data-action="cash" data-choice="fold">&#10007; Fold</button>';
+    }
+    html+='</div>';
+  }else{
+    var ok=cRes==='ok';
+    var lbl=cAns.action==='4bet'?'4-Bet':cAns.action==='call'?'Call':cAns.action==='open'?'Open':'Fold';
+    html+='<div class="anim"><div class="'+(ok?'res-ok':'res-no')+'" style="margin-bottom:8px">';
+    html+='<div style="font-weight:700;font-size:13px;margin-bottom:6px;color:'+(ok?'var(--green)':'var(--pink)')+'">';
+    html+=(ok?'&#10003; Correct - +10 XP':'&#10007; Incorrect - +2 XP')+'</div>';
+    html+='<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:6px">'+cAns.note+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">Correct: <strong style="color:var(--text)">'+lbl+'</strong></div>';
+    html+='</div>';
+    if(cTot>0){
+      var acc2=Math.round(cCor/cTot*100);
+      html+='<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:6px">';
+      html+='<span>Session: '+cCor+'/'+cTot+'</span>';
+      html+='<span style="color:'+(acc2>=70?'var(--green)':acc2>=50?'var(--gold)':'var(--pink)')+'">'+acc2+'% accuracy</span>';
+      html+='</div>';
+    }
+    html+='<button class="nbtn" data-action="next-cash">Next hand &#8594;</button></div>';
+  }
+
+  // Key concepts accordion
+  html+='<div style="margin-top:20px">';
+  html+='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);margin-bottom:10px;text-transform:uppercase">200BB Key Concepts</div>';
+  for(var ti=0;ti<CASH_TIPS.length;ti++){
+    var tip=CASH_TIPS[ti];var isOpen2=cashTipOpen===ti;
+    html+='<div style="border-bottom:1px solid var(--bd)'+(ti===0?';border-top:1px solid var(--bd)':'')+'">';
+    html+='<div data-action="cash-tip" data-ti="'+ti+'" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;cursor:pointer">';
+    html+='<div style="font-size:12px;font-weight:600;color:var(--cyan)">'+tip.title+'</div>';
+    html+='<span style="font-size:14px;color:var(--text3);transform:'+(isOpen2?'rotate(90deg)':'rotate(0)')+'">&#8250;</span>';
+    html+='</div>';
+    if(isOpen2){
+      html+='<div class="anim" style="padding:0 0 12px 0;font-size:11px;color:var(--text2);line-height:1.8">'+tip.body+'</div>';
+    }
+    html+='</div>';
+  }
+  html+='</div>';
+  html+='</div>';
+  return html;
+}
+
+function render(){
+  var el=document.getElementById('main');
+  if(view==='home')el.innerHTML=renderHome();
+  else if(view==='drill')el.innerHTML=renderDrill();
+  else if(view==='flash')el.innerHTML=renderFlash();
+  else if(view==='quiz')el.innerHTML=renderQuiz();
+  else if(view==='grid')el.innerHTML=renderGrid();
+  else if(view==='cash'){if(!cHand)newCashDrill();el.innerHTML=renderCash();}
+}
+
+document.addEventListener('click',function(e){
+  var el=e.target;
+  for(var i=0;i<6;i++){
+    if(!el||el===document.body)break;
+    var a=el.getAttribute('data-action');
+    if(a){
+      e.preventDefault();
+      if(a==='nav'){view=el.getAttribute('data-view');document.querySelectorAll('.nb').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-view')===view);});if(view==='drill')newDrill();if(view==='cash')newCashDrill();render();}
+      else if(a==='drill'){
+        var choice=el.getAttribute('data-choice');
+        var ans;
+        if(dMode==='3bet'){ans=get3BetAns(hand,pos,bb,d3VillainPos||'BB',d3VillainSize||8);}
+        else if(dMode==='vs_co'){ans=getVsOpenAns(hand,pos,bb,'CO');}
+        else if(dMode==='vs_btn'){ans=getVsOpenAns(hand,pos,bb,'BTN');}
+        else if(dMode==='vs_ep'){ans=getVsOpenAns(hand,pos,bb,'EP');}
+        else if(dMode==='bvb'&&pos==='BB'){ans=getVsOpenAns(hand,pos,bb,'SB');}
+        else{ans=getAns(hand,pos,bb);}
+        var ok=choice===ans.action;
+        dAns=ans;dRes=ok?'ok':'no';dCor+=(ok?1:0);dTot++;xp+=(ok?10:2);streak=ok?streak+1:0;save();updHdr();render();
+      }
+      else if(a==='next-drill'){newDrill();render();}
+      else if(a==='drill-mode'){dMode=el.getAttribute('data-mode');newDrill();render();}
+      else if(a==='fc-flip'){fcF=!fcF;render();}
+      else if(a==='fc-pillar'){fcP=parseInt(el.getAttribute('data-p'));fcI=0;fcF=false;render();}
+      else if(a==='fc-prev'){var deck=FC[fcP]||[];fcI=(fcI-1+deck.length)%deck.length;fcF=false;render();}
+      else if(a==='fc-next'){var deck2=FC[fcP]||[];fcI=(fcI+1)%deck2.length;fcF=false;render();}
+      else if(a==='quiz-cat'){qCatFilter=el.getAttribute('data-cat');qCur=null;qSeen=[];render();}
+      else if(a==='next-quiz'){getNextQuestion();render();}
+      else if(a==='ans-quiz'){
+        if(qAns)break;
+        var qi=parseInt(el.getAttribute('data-qi'));
+        qSel=qCur.o[qi].charAt(0);
+        qAns=(qSel===qCur.a)?'ok':'no';
+        xp+=(qAns==='ok'?15:3);streak=qAns==='ok'?streak+1:0;
+        save();updHdr();render();
+      }
+      else if(a==='cash'){
+        var ch=el.getAttribute('data-choice');
+        var ca;
+        if(cMode==='3bet'){ca=getCash3BetAns(cHand,cPos,cDepth,c3VPos,c3VSize);}
+        else{ca=evalCashHand(cHand);}
+        var cok=ch===ca.action;cAns=ca;cRes=cok?'ok':'no';cCor+=(cok?1:0);cTot++;xp+=(cok?10:2);streak=cok?streak+1:0;save();updHdr();render();
+      }
+      else if(a==='next-cash'){newCashDrill();render();}
+      else if(a==='cash-mode'){cMode=el.getAttribute('data-mode');newCashDrill();render();}
+      else if(a==='cash-cfg'){
+        var k=el.getAttribute('data-k');var v=el.getAttribute('data-v');
+        if(k==='table')cTableSize=v;
+        else if(k==='depth')cDepth=v;
+        newCashDrill();render();
+      }
+      else if(a==='cash-tip'){var ti2=parseInt(el.getAttribute('data-ti'));cashTipOpen=cashTipOpen===ti2?-1:ti2;render();}
+      else if(a==='toggle-pillar'){var pi2=parseInt(el.getAttribute('data-pi'));pillarOpen=pillarOpen===pi2?-1:pi2;render();}
+      else if(a==='grid-depth'){gridD=el.getAttribute('data-depth');render();}
+      break;
+    }
+    el=el.parentElement;
+  }
+});
+
+setInterval(function(){suitI=(suitI+1)%4;if(view==='home'){var s=SUITS[suitI];var d=document.getElementById('suit-deco');var b=document.getElementById('suit-bg');if(d)d.textContent=s;if(b)b.textContent=s;}},1800);
+
+updHdr();render();
+</script>
+</body>
+</html>
